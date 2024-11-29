@@ -1,0 +1,20 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+		},
+		{
+			"name": "back-end-res",
+			"path": "spring-api/src/main/resources",
+		},
+		{
+			"name": "back-end-src",
+			"path": "spring-api/src/main/java/net/york/tsg"
+		},
+		{
+			"name": "front-end",
+			"path": "react-ui",
+		},
+	],
+}
