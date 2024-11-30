@@ -5,9 +5,10 @@ import net.york.tsg.doctor.Doctor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder;
+import lombok.ToString;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -26,24 +27,17 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
+@ToString
 @Entity
 @Table(name = "appointments")
 public class Appointment {
 
     @Id
+    @GeneratedValue
     @Column(name = "appointment_id")
-    @SequenceGenerator(
-    	name = "appointment_sequence",
-    	sequenceName = "appointment_sequence",
-    	allocationSize = 1
-    )
-    @GeneratedValue(
-        strategy = GenerationType.SEQUENCE,
-        generator = "appointment_id_sequence"
-    )
     private Long id;
 
     @NotNull
