@@ -21,8 +21,8 @@ public class DoctorController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getDoctors() {
-		return doctorService.getDoctors();
+	public ResponseEntity<?> getAllDoctors() {
+		return doctorService.getAllDoctors();
 	}
 
 	@GetMapping(path = "{doctor_id}")
@@ -36,8 +36,8 @@ public class DoctorController {
 	}
 
 	@DeleteMapping(path = "{doctor_id}")
-	public ResponseEntity<?> deleteDoctor(@PathVariable("doctor_id") Long doctorId) {
-		return doctorService.deleteDoctor(doctorId);
+	public ResponseEntity<?> removeDoctor(@PathVariable("doctor_id") Long doctorId) {
+		return doctorService.removeDoctor(doctorId);
 	}
 
 	@PutMapping(path = "{doctor_id}")

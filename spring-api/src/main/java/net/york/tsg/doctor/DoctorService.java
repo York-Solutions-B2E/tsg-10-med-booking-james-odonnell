@@ -20,7 +20,7 @@ public class DoctorService {
 		this.doctorRepository = doctorRepository;
 	}
 
-	public ResponseEntity<?> getDoctors() {
+	public ResponseEntity<?> getAllDoctors() {
 		return new ResponseEntity<>(
 			doctorRepository.findAll(), HttpStatus.OK);
 	}
@@ -40,7 +40,7 @@ public class DoctorService {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> deleteDoctor(Long doctorId) {
+	public ResponseEntity<?> removeDoctor(Long doctorId) {
 		if (doctorRepository.findById(doctorId).isEmpty())
 			return new ResponseEntity<>(
 				"Error: doctor_id: " + doctorId + " not found.",
