@@ -4,7 +4,8 @@
 		{
 			"path": ".",
 			"file_include_patterns": ["*", "spring-api/pom.xml"],
-			"folder_exclude_patterns": ["snippets", "spring-api"],
+			"folder_exclude_patterns": ["snippets", "src", "*mvn*", "target"],
+			"file_exclude_patterns": ["*mvnw*", "jar"]
 		},
 		{
 			"name": "back-end-res",
