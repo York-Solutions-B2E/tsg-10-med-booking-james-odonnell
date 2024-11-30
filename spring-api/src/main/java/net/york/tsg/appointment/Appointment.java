@@ -18,10 +18,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -46,10 +46,10 @@ public class Appointment {
     )
     private Long id;
 
-    @NotBlank
-    private Instant date;
+    @NotNull
+    private LocalDateTime date;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     @JoinColumn(
     	name = "doctor_id",
