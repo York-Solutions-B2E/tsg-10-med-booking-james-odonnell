@@ -1,4 +1,4 @@
-package net.york.tsg;
+package net.york.tsg.appointment;
 
 import net.york.tsg.doctor.Doctor;
 

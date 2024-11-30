@@ -1,4 +1,4 @@
-package net.york.tsg;
+package net.york.tsg.appointment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
