@@ -29,7 +29,7 @@ public class DoctorService {
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
 		if (optionalDoctor.isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctorId: " + doctorId + " not found.",
+				"Error: doctor_id: " + doctorId + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 		return ResponseEntity.ok().body(optionalDoctor.get());
@@ -43,7 +43,7 @@ public class DoctorService {
 	public ResponseEntity<?> deleteDoctor(Long doctorId) {
 		if (doctorRepository.findById(doctorId).isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctorId: " + doctorId + " not found.",
+				"Error: doctor_id: " + doctorId + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 
@@ -60,7 +60,7 @@ public class DoctorService {
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
 		if (doctorRepository.findById(doctorId).isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctorId: " + doctorId + " not found.",
+				"Error: doctor_id: " + doctorId + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 
