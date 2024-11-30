@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import jakarta.validation.Valid;
+
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "doctors")
 public class DoctorController {
@@ -18,20 +22,31 @@ public class DoctorController {
 
 	@GetMapping
 	public ResponseEntity<?> getDoctors() {
-		System.out.println("GET");
-		return new ResponseEntity<>(HttpStatus.OK);
+		return doctorService.getDoctors();
+	}
+
+	@GetMapping(path = "{doctorId}")
+	public ResponseEntity<?> getDoctorById(@PathVariable("doctorId") Long doctorId) {
+		return doctorService.getDoctorById(doctorId);
 	}
 
 	@PostMapping
-	public ResponseEntity<?> addNewDoctor(@RequestBody Doctor doctor) {
-		System.out.println("POST");
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> addNewDoctor(@Valid @RequestBody Doctor doctor) {
+		return doctorService.addNewDoctor(doctor);
 	}
 
-	@DeleteMapping(path = "{doctor_id}")
-	public ResponseEntity<?> deleteDoctor(@PathVariable("doctor_id") Long id) {
-		System.out.println("DELETE");
-		return new ResponseEntity<>(HttpStatus.OK);
+	@DeleteMapping(path = "{doctorId}")
+	public ResponseEntity<?> deleteDoctor(@PathVariable("doctorId") Long doctorId) {
+		return doctorService.deleteDoctor(doctorId);
+	}
+
+	@PutMapping(path = "{doctorId}")
+	public ResponseEntity<?> updateDoctorInfo(
+		@PathVariable("doctorId") Long doctorId,
+		@RequestParam(required = false) String firstName,
+		@RequestParam(required = false) String lastName,
+		@RequestParam(required = false) String specialization) {
+		return doctorService.updateDoctorInfo(doctorId, firstName, lastName, specialization);
 	}
 	
 }

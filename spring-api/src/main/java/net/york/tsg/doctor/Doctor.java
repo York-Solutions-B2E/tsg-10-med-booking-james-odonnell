@@ -1,9 +1,12 @@
 package net.york.tsg.doctor;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
+import lombok.ToString;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,6 +19,9 @@ import jakarta.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "doctors")
 public class Doctor {
@@ -26,7 +32,10 @@ public class Doctor {
     private Long id;
     
     @NotBlank
-    private String name;
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
 
     @NotBlank
     private String specialization;
