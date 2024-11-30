@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import jakarta.transaction.Transactional;
+
 import java.util.Optional;
 
 @Service
@@ -47,6 +49,35 @@ public class PatientService {
 			);
 
 		patientRepository.deleteById(patient_id);
+		return new ResponseEntity<>(optionalPatient.get(), HttpStatus.OK);
+	}
+
+	@Transactional
+	public ResponseEntity<?> updatePatientInformation(
+		Long patient_id,
+		String first_name,
+		String last_name,
+		String email,
+		String phone_number) {
+		Optional<Patient> optionalPatient = patientRepository.findById(patient_id);
+		if (optionalPatient.isEmpty())
+			return new ResponseEntity<>(
+				"Error: could not update patient information; patient_id: " + patient_id + ", does not exist.",
+				HttpStatus.NOT_FOUND
+			);
+
+		if (first_name != null && !first_name.isEmpty())
+			optionalPatient.get().setFirstName(first_name);
+
+		if (last_name != null && !last_name.isEmpty())
+			optionalPatient.get().setLastName(last_name);
+
+		if (email != null && !email.isEmpty())
+			optionalPatient.get().setEmail(email);
+
+		if (phone_number != null && !phone_number.isEmpty())
+			optionalPatient.get().setPhoneNumber(phone_number);
+
 		return new ResponseEntity<>(optionalPatient.get(), HttpStatus.OK);
 	}
 	

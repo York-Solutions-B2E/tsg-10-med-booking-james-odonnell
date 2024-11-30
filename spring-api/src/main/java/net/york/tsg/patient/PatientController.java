@@ -39,5 +39,15 @@ public class PatientController {
 	public ResponseEntity<?> removePatientById(@PathVariable("patient_id") Long patient_id) {
 		return patientService.removePatientById(patient_id);
 	}
+
+	@PutMapping(path = "{patient_id}")
+	public ResponseEntity<?> updatePatientInformation(
+		@PathVariable("patient_id") Long patient_id,
+		@RequestParam(required = false) String first_name,
+		@RequestParam(required = false) String last_name,
+		@RequestParam(required = false) String email,
+		@RequestParam(required = false) String phone_number) {
+		return patientService.updatePatientInformation(patient_id, first_name, last_name, email, phone_number);
+	}
 	
 }
