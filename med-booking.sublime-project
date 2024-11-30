@@ -3,6 +3,8 @@
 	[
 		{
 			"path": ".",
+			"file_include_patterns": ["*", "spring-api/pom.xml"],
+			"folder_exclude_patterns": ["snippets", "spring-api"],
 		},
 		{
 			"name": "back-end-res",
@@ -10,11 +12,14 @@
 		},
 		{
 			"name": "back-end-src",
-			"path": "spring-api/src/main/java/net/york/tsg"
+			"path": "spring-api/src/main/java/net/york/tsg",
 		},
 		{
 			"name": "front-end",
 			"path": "react-ui",
 		},
+		{
+			"path": "snippets"
+		}
 	],
 }
