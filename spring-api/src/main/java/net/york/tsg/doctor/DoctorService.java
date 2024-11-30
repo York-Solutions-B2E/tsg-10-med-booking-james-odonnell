@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 
 import jakarta.transaction.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,11 +24,11 @@ public class DoctorService {
 			doctorRepository.findAll(), HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> getDoctorById(Long doctorId) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
+	public ResponseEntity<?> getDoctorById(Long doctor_id) {
+		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor_id);
 		if (optionalDoctor.isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctorId + " not found.",
+				"Error: doctor_id: " + doctor_id + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 		return ResponseEntity.ok().body(optionalDoctor.get());
@@ -40,27 +39,27 @@ public class DoctorService {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> removeDoctor(Long doctorId) {
-		if (doctorRepository.findById(doctorId).isEmpty())
+	public ResponseEntity<?> removeDoctor(Long doctor_id) {
+		if (doctorRepository.findById(doctor_id).isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctorId + " not found.",
+				"Error: doctor_id: " + doctor_id + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 
-		doctorRepository.deleteById(doctorId);
+		doctorRepository.deleteById(doctor_id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@Transactional
 	public ResponseEntity<?> updateDoctorInfo(
-		Long doctorId,
+		Long doctor_id,
 		String firstName,
 		String lastName,
 		String specialization) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
-		if (doctorRepository.findById(doctorId).isEmpty())
+		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor_id);
+		if (doctorRepository.findById(doctor_id).isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctorId + " not found.",
+				"Error: doctor_id: " + doctor_id + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 
