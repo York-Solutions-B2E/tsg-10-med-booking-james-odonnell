@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping(path = "appointments")
@@ -22,32 +22,34 @@ public class AppointmentController {
 
 	@GetMapping
 	public ResponseEntity<?> getAllAppointments() {
-		System.out.println("GET");
-		return new ResponseEntity<>(HttpStatus.OK);
+		return appointmentService.getAllAppointments();
 	}
 
 	@GetMapping(path = "{appointment_id}")
 	public ResponseEntity<?> getAppointmentById(@PathVariable("appointment_id") Long appointment_id) {
-		System.out.println("GET by id");
-		return new ResponseEntity<>(HttpStatus.OK);
+		return appointmentService.getAppointmentById(appointment_id);
+	}
+
+	@GetMapping(path = "doctor/{doctor_id}")
+	public ResponseEntity<?> getAllAppointmentsByDoctorId(@PathVariable("doctor_id") Long doctor_id) {
+		return appointmentService.getAllAppointmentsByDoctorId(doctor_id);
 	}
 
 	@PostMapping
-	public ResponseEntity<?> scheduleNewAppointment(@RequestBody Appointment appointment) {
-		System.out.println("POST");
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> scheduleNewAppointment(@Valid @RequestBody Appointment appointment) {
+		return appointmentService.scheduleNewAppointment(appointment);
 	}
 
 	@DeleteMapping(path = "{appointment_id}")
 	public ResponseEntity<?> cancelAppointment(@PathVariable(name = "appointment_id") Long appointment_id) {
-		System.out.println("DELETE");
-		return new ResponseEntity<>(HttpStatus.OK);
+		return appointmentService.cancelAppointment(appointment_id);
 	}
 
-	@PutMapping(path = "{appointment_id}")
-	public ResponseEntity<?> updateAppointment(@PathVariable(name = "appointment_id") Long appointment_id) {
-		System.out.println("PUT");
-		return new ResponseEntity<>(HttpStatus.OK);
+	@PutMapping(path = "reschedule/{appointment_id}")
+	public ResponseEntity<?> rescheduleAppointment(
+		@PathVariable(name = "appointment_id") Long appointment_id,
+		@RequestBody LocalDateTime date_time) {
+		return appointmentService.rescheduleAppointment(appointment_id, date_time);
 	}
 	
 }

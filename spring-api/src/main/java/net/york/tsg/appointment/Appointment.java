@@ -47,7 +47,7 @@ public class Appointment {
     private Long id;
 
     @NotNull
-    private LocalDateTime date;
+    private LocalDateTime dateTime;
 
     @NotNull
     @ManyToOne
