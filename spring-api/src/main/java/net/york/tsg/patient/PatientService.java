@@ -53,30 +53,25 @@ public class PatientService {
 	}
 
 	@Transactional
-	public ResponseEntity<?> updatePatientInformation(
-		Long patient_id,
-		String first_name,
-		String last_name,
-		String email,
-		String phone_number) {
-		Optional<Patient> optionalPatient = patientRepository.findById(patient_id);
+	public ResponseEntity<?> updatePatientInformation(Patient patient) {
+		Optional<Patient> optionalPatient = patientRepository.findById(patient.getId());
 		if (optionalPatient.isEmpty())
 			return new ResponseEntity<>(
-				"Error: could not update patient information; patient_id: " + patient_id + ", does not exist.",
+				"Error: could not update patient information; patient_id: " + patient.getId() + ", does not exist.",
 				HttpStatus.NOT_FOUND
 			);
 
-		if (first_name != null && !first_name.isEmpty())
-			optionalPatient.get().setFirstName(first_name);
+		if (patient.getFirstName() != null && !patient.getFirstName().isEmpty())
+			optionalPatient.get().setFirstName(patient.getFirstName());
 
-		if (last_name != null && !last_name.isEmpty())
-			optionalPatient.get().setLastName(last_name);
+		if (patient.getLastName() != null && !patient.getLastName().isEmpty())
+			optionalPatient.get().setLastName(patient.getLastName());
 
-		if (email != null && !email.isEmpty())
-			optionalPatient.get().setEmail(email);
+		if (patient.getEmail() != null && !patient.getEmail().isEmpty())
+			optionalPatient.get().setEmail(patient.getEmail());
 
-		if (phone_number != null && !phone_number.isEmpty())
-			optionalPatient.get().setPhoneNumber(phone_number);
+		if (patient.getPhoneNumber() != null && !patient.getPhoneNumber().isEmpty())
+			optionalPatient.get().setPhoneNumber(patient.getPhoneNumber());
 
 		return new ResponseEntity<>(optionalPatient.get(), HttpStatus.OK);
 	}

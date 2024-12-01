@@ -25,9 +25,9 @@ public class PatientController {
 		return patientService.getAllPatients();
 	}
 	
-	@GetMapping(path = "{patient_id}")
-	public ResponseEntity<?> getPatientById(@PathVariable("patient_id") Long patient_id) {
-		return patientService.getPatientById(patient_id);
+	@GetMapping(path = "id")
+	public ResponseEntity<?> getPatientById(@RequestBody Patient patient) {
+		return patientService.getPatientById(patient.getId());
 	}
 	
 	@PostMapping
@@ -35,19 +35,14 @@ public class PatientController {
 		return patientService.addNewPatient(patient);
 	}
 	
-	@DeleteMapping(path = "{patient_id}")
-	public ResponseEntity<?> removePatientById(@PathVariable("patient_id") Long patient_id) {
-		return patientService.removePatientById(patient_id);
+	@DeleteMapping
+	public ResponseEntity<?> removePatientById(@RequestBody Patient patient) {
+		return patientService.removePatientById(patient.getId());
 	}
 
-	@PutMapping(path = "{patient_id}")
-	public ResponseEntity<?> updatePatientInformation(
-		@PathVariable("patient_id") Long patient_id,
-		@RequestParam(required = false) String first_name,
-		@RequestParam(required = false) String last_name,
-		@RequestParam(required = false) String email,
-		@RequestParam(required = false) String phone_number) {
-		return patientService.updatePatientInformation(patient_id, first_name, last_name, email, phone_number);
+	@PutMapping
+	public ResponseEntity<?> updatePatientInformation(@RequestBody Patient patient) {
+		return patientService.updatePatientInformation(patient);
 	}
 	
 }
