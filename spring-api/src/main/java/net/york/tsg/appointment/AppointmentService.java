@@ -3,6 +3,9 @@ package net.york.tsg.appointment;
 import net.york.tsg.doctor.Doctor;
 import net.york.tsg.doctor.DoctorRepository;
 
+import net.york.tsg.patient.Patient;
+import net.york.tsg.patient.PatientRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +23,16 @@ public class AppointmentService {
 	
 	private final AppointmentRepository appointmentRepository;
 	private final DoctorRepository doctorRepository;
+	private final PatientRepository patientRepository;
 
 	@Autowired
 	public AppointmentService(
 		AppointmentRepository appointmentRepository,
-		DoctorRepository doctorRepository) {
+		DoctorRepository doctorRepository,
+		PatientRepository patientRepository) {
 		this.appointmentRepository = appointmentRepository;
 		this.doctorRepository = doctorRepository;
+		this.patientRepository = patientRepository;
 	}
 
 	public ResponseEntity<?> getAllAppointments() {
@@ -46,8 +52,7 @@ public class AppointmentService {
 	}
 	
 	public ResponseEntity<?> getAllAppointmentsByDoctorId(Long doctor_id) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor_id);
-		if (optionalDoctor.isEmpty())
+		if (doctorRepository.findById(doctor_id).isEmpty())
 			return new ResponseEntity<>(
 				"Error: no appointments found; doctor_id: " + doctor_id + ", does not exist.",
 				HttpStatus.NOT_FOUND
@@ -63,6 +68,23 @@ public class AppointmentService {
 		return new ResponseEntity<>(optionalAppointments, HttpStatus.OK);
 	}
 
+	public ResponseEntity<?> getAllAppointmentsByPatientId(Long patient_id) {
+		if (patientRepository.findById(patient_id).isEmpty())
+			return new ResponseEntity<>(
+				"Error: no appointments found; patient_id: " + patient_id + ", does not exist.",
+				HttpStatus.NOT_FOUND
+			);
+
+		Optional<List<Appointment>> optionalAppointments = appointmentRepository.findAllByPatientId(patient_id);
+		if (optionalAppointments.isEmpty())
+			return new ResponseEntity<>(
+				"Patient: " + patient_id + " has no appointments scheduled.",
+				HttpStatus.OK
+			);
+
+		return new ResponseEntity<>(optionalAppointments, HttpStatus.OK);
+	}
+
 	public ResponseEntity<?> scheduleNewAppointment(Appointment appointment) {
 		Long doctor_id = appointment.getDoctor().getId();
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor_id);
@@ -72,7 +94,16 @@ public class AppointmentService {
 				HttpStatus.NOT_FOUND
 			);
 
+		Long patient_id = appointment.getPatient().getId();
+		Optional<Patient> optionalPatient = patientRepository.findById(patient_id);
+		if (optionalPatient.isEmpty())
+			return new ResponseEntity<>(
+				"Error: could not schedule appointment; patient_id: " + patient_id + ", does not exist.",
+				HttpStatus.NOT_FOUND
+			);
+
 		appointment.setDoctor(optionalDoctor.get());
+		appointment.setPatient(optionalPatient.get());
 		appointmentRepository.save(appointment);
 		return new ResponseEntity<>(appointment, HttpStatus.OK);
 	}

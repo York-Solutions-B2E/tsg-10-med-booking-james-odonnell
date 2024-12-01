@@ -35,6 +35,11 @@ public class AppointmentController {
 		return appointmentService.getAllAppointmentsByDoctorId(doctor_id);
 	}
 
+	@GetMapping(path = "patient/{patient_id}")
+	public ResponseEntity<?> getAllAppointmentsByPatientId(@PathVariable("patient_id") Long patient_id) {
+		return appointmentService.getAllAppointmentsByPatientId(patient_id);
+	}
+
 	@PostMapping
 	public ResponseEntity<?> scheduleNewAppointment(@Valid @RequestBody Appointment appointment) {
 		return appointmentService.scheduleNewAppointment(appointment);
