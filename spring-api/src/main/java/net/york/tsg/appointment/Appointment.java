@@ -1,6 +1,7 @@
 package net.york.tsg.appointment;
 
 import net.york.tsg.doctor.Doctor;
+import net.york.tsg.patient.Patient;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,5 +51,13 @@ public class Appointment {
     	referencedColumnName = "doctor_id"
     )
     private Doctor doctor;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(
+        name = "patient_id",
+        referencedColumnName = "patient_id"
+    )
+    private Patient patient;
 
 }
