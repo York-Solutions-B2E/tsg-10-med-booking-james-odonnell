@@ -16,4 +16,7 @@ public interface AppointmentRepository
     @NativeQuery("SELECT * FROM APPOINTMENTS WHERE DOCTOR_ID = ?1")
     Optional<List<Appointment>> findAllByDoctorId(Long doctor_id);
 
+    @NativeQuery("SELECT * FROM APPOINTMENTS WHERE PATIENT_ID = ?1")
+    Optional<List<Appointment>> findAllByPatientId(Long patient_id);
+
 }
