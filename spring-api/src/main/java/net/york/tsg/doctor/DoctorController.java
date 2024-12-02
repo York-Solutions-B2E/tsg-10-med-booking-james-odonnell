@@ -1,5 +1,7 @@
 package net.york.tsg.doctor;
 
+import net.york.tsg.specialization.Specialization;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +47,7 @@ public class DoctorController {
 		@PathVariable("doctor_id") Long doctor_id,
 		@RequestParam(required = false) String firstName,
 		@RequestParam(required = false) String lastName,
-		@RequestParam(required = false) String specialization) {
+		@RequestBody Specialization specialization) {
 		return doctorService.updateDoctorInfo(doctor_id, firstName, lastName, specialization);
 	}
 	

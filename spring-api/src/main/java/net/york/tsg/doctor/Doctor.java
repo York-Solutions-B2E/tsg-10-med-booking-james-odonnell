@@ -1,5 +1,7 @@
 package net.york.tsg.doctor;
 
+import net.york.tsg.specialization.Specialization;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -13,7 +15,10 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -37,7 +42,12 @@ public class Doctor {
     @NotBlank
     private String lastName;
 
-    @NotBlank
-    private String specialization;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(
+        name = "specialization_id",
+        referencedColumnName = "specialization_id"
+    )
+    private Specialization specialization;
     
 }

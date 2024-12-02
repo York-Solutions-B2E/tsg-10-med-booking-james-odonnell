@@ -1,5 +1,8 @@
 package net.york.tsg.doctor;
 
+import net.york.tsg.specialization.Specialization;
+import net.york.tsg.specialization.SpecializationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +16,12 @@ import java.util.Optional;
 public class DoctorService {
 
 	private final DoctorRepository doctorRepository;
+	private final SpecializationService specializationService;
 
 	@Autowired
-	public DoctorService(DoctorRepository doctorRepository) {
+	public DoctorService(DoctorRepository doctorRepository, SpecializationService specializationService) {
 		this.doctorRepository = doctorRepository;
+		this.specializationService = specializationService;
 	}
 
 	public ResponseEntity<?> getAllDoctors() {
@@ -55,7 +60,7 @@ public class DoctorService {
 		Long doctor_id,
 		String firstName,
 		String lastName,
-		String specialization) {
+		Specialization specialization) {
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor_id);
 		if (doctorRepository.findById(doctor_id).isEmpty())
 			return new ResponseEntity<>(
@@ -69,7 +74,7 @@ public class DoctorService {
 		if (lastName != null && !lastName.isEmpty())
 			optionalDoctor.get().setLastName(lastName);
 
-		if (specialization != null && !specialization.isEmpty())
+		if (specialization != null && specializationService.specializationExists(specialization.getName()))
 			optionalDoctor.get().setSpecialization(specialization);
 
 		return new ResponseEntity<>(optionalDoctor.get(), HttpStatus.OK);
