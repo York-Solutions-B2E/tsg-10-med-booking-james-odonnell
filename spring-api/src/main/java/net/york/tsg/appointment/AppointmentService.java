@@ -143,7 +143,7 @@ public class AppointmentService {
 		Doctor doctor = appointment.getDoctor();
 		if (doctor != null) {
 			if (doctor.getId() != null && doctorRepository.existsById(doctor.getId())) {
-				optionalAppointment.get().setDoctor(doctorRepository.findById(doctor.getId()));
+				optionalAppointment.get().setDoctor(doctorRepository.findById(doctor.getId()).get());
 			}
 		}
 
