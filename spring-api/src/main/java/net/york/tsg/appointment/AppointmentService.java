@@ -126,7 +126,6 @@ public class AppointmentService {
 
 		optionalAppointment.get().setStatus(AppointmentStatus.CANCELLED);
 
-		appointmentRepository.deleteById(appointment.getId());
 		return new ResponseEntity<>(optionalAppointment.get(), HttpStatus.OK);
 	}
 
