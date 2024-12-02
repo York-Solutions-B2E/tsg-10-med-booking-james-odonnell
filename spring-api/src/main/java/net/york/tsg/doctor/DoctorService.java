@@ -56,26 +56,22 @@ public class DoctorService {
 	}
 
 	@Transactional
-	public ResponseEntity<?> updateDoctorInfo(
-		Long doctor_id,
-		String firstName,
-		String lastName,
-		Specialization specialization) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor_id);
-		if (doctorRepository.findById(doctor_id).isEmpty())
+	public ResponseEntity<?> updateDoctorInfo(Doctor doctor) {
+		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor.getId());
+		if (optionalDoctor.isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctor_id + " not found.",
+				"Error: doctor_id: " + doctor.getId() + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 
-		if (firstName != null && !firstName.isEmpty())
-			optionalDoctor.get().setFirstName(firstName);
+		if (doctor.getFirstName() != null && !doctor.getFirstName().isEmpty())
+			optionalDoctor.get().setFirstName(doctor.getFirstName());
 
-		if (lastName != null && !lastName.isEmpty())
-			optionalDoctor.get().setLastName(lastName);
+		if (doctor.getLastName() != null && !doctor.getLastName().isEmpty())
+			optionalDoctor.get().setLastName(doctor.getLastName());
 
-		if (specialization != null && specializationService.specializationExists(specialization.getName()))
-			optionalDoctor.get().setSpecialization(specialization);
+		if (doctor.getSpecialization() != null && specializationService.specializationExists(doctor.getSpecialization().getName()))
+			optionalDoctor.get().setSpecialization(doctor.getSpecialization());
 
 		return new ResponseEntity<>(optionalDoctor.get(), HttpStatus.OK);
 	}

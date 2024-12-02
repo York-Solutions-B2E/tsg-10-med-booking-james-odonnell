@@ -27,9 +27,9 @@ public class DoctorController {
 		return doctorService.getAllDoctors();
 	}
 
-	@GetMapping(path = "{doctor_id}")
-	public ResponseEntity<?> getDoctorById(@PathVariable("doctor_id") Long doctor_id) {
-		return doctorService.getDoctorById(doctor_id);
+	@GetMapping(path = "find")
+	public ResponseEntity<?> getDoctorById(@RequestBody Doctor doctor) {
+		return doctorService.getDoctorById(doctor.getId());
 	}
 
 	@PostMapping
@@ -37,18 +37,14 @@ public class DoctorController {
 		return doctorService.addNewDoctor(doctor);
 	}
 
-	@DeleteMapping(path = "{doctor_id}")
-	public ResponseEntity<?> removeDoctor(@PathVariable("doctor_id") Long doctor_id) {
-		return doctorService.removeDoctor(doctor_id);
+	@DeleteMapping
+	public ResponseEntity<?> removeDoctor(@RequestBody Doctor doctor) {
+		return doctorService.removeDoctor(doctor.getId());
 	}
 
-	@PutMapping(path = "{doctor_id}")
-	public ResponseEntity<?> updateDoctorInfo(
-		@PathVariable("doctor_id") Long doctor_id,
-		@RequestParam(required = false) String firstName,
-		@RequestParam(required = false) String lastName,
-		@RequestBody Specialization specialization) {
-		return doctorService.updateDoctorInfo(doctor_id, firstName, lastName, specialization);
+	@PutMapping()
+	public ResponseEntity<?> updateDoctorInfo(@RequestBody Doctor doctor) {
+		return doctorService.updateDoctorInfo(doctor);
 	}
 	
 }
