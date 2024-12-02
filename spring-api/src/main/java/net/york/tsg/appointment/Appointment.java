@@ -60,4 +60,7 @@ public class Appointment {
     )
     private Patient patient;
 
+    private AppointmentStatus status = AppointmentStatus.CONFIRMED;
+    private Boolean inPerson;
+
 }
