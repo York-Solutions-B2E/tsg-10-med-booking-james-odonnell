@@ -29,11 +29,13 @@ public class DoctorService {
 			doctorRepository.findAll(), HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> getDoctorById(Long doctor_id) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor_id);
+	public ResponseEntity<?> getDoctorById(Doctor doctor) {
+		if (doctor.getId() == null)
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor.getId());
 		if (optionalDoctor.isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctor_id + " not found.",
+				"Error: doctor_id: " + doctor.getId() + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 		return ResponseEntity.ok().body(optionalDoctor.get());
@@ -44,19 +46,23 @@ public class DoctorService {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> removeDoctor(Long doctor_id) {
-		if (doctorRepository.findById(doctor_id).isEmpty())
+	public ResponseEntity<?> removeDoctor(Doctor doctor) {
+		if (doctor.getId() == null)
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		if (doctorRepository.findById(doctor.getId()).isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctor_id + " not found.",
+				"Error: doctor_id: " + doctor.getId() + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 
-		doctorRepository.deleteById(doctor_id);
+		doctorRepository.deleteById(doctor.getId());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@Transactional
 	public ResponseEntity<?> updateDoctorInfo(Doctor doctor) {
+		if (doctor.getId() == null)
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor.getId());
 		if (optionalDoctor.isEmpty())
 			return new ResponseEntity<>(

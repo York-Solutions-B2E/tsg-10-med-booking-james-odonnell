@@ -29,7 +29,7 @@ public class DoctorController {
 
 	@GetMapping(path = "find")
 	public ResponseEntity<?> getDoctorById(@RequestBody Doctor doctor) {
-		return doctorService.getDoctorById(doctor.getId());
+		return doctorService.getDoctorById(doctor);
 	}
 
 	@PostMapping
@@ -39,7 +39,7 @@ public class DoctorController {
 
 	@DeleteMapping
 	public ResponseEntity<?> removeDoctor(@RequestBody Doctor doctor) {
-		return doctorService.removeDoctor(doctor.getId());
+		return doctorService.removeDoctor(doctor);
 	}
 
 	@PutMapping()
