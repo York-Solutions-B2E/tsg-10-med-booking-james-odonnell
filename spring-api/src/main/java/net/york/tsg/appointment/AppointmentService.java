@@ -151,8 +151,8 @@ public class AppointmentService {
 			optionalAppointment.get().setDateTime(appointment.getDateTime());
 		if (appointment.getStatus() != null)
 			optionalAppointment.get().setStatus(appointment.getStatus());
-		if (appointment.getInPerson() != null)
-			optionalAppointment.get().setInPerson(appointment.getInPerson());
+		if (appointment.getIsInPerson() != null)
+			optionalAppointment.get().setIsInPerson(appointment.getIsInPerson());
 		return new ResponseEntity<>(optionalAppointment.get(), HttpStatus.OK);
 	}
 
