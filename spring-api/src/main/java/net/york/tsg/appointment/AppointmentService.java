@@ -124,6 +124,8 @@ public class AppointmentService {
 				HttpStatus.NOT_FOUND
 			);
 
+		optionalAppointment.get().setStatus(AppointmentStatus.CANCELLED);
+
 		appointmentRepository.deleteById(appointment.getId());
 		return new ResponseEntity<>(optionalAppointment.get(), HttpStatus.OK);
 	}
@@ -139,8 +141,19 @@ public class AppointmentService {
 				HttpStatus.NOT_FOUND
 			);
 
+		Doctor doctor = appointment.getDoctor();
+		if (doctor != null) {
+			if (doctor.getId() != null && doctorRepository.existsById(doctor.getId())) {
+				optionalAppointment.get().setDoctor(doctorRepository.findById(doctor.getId()));
+			}
+		}
+
 		if (appointment.getDateTime() != null)
 			optionalAppointment.get().setDateTime(appointment.getDateTime());
+		if (appointment.getStatus() != null)
+			optionalAppointment.get().setStatus(appointment.getStatus());
+		if (appointment.getInPerson() != null)
+			optionalAppointment.get().setInPerson(appointment.getInPerson());
 		return new ResponseEntity<>(optionalAppointment.get(), HttpStatus.OK);
 	}
 
