@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
+import Appointments from './pages/Appointments';
 
 const ThemeContext = createContext();
 export const useThemeContext = () => {
@@ -55,6 +56,7 @@ const App = () => {
 
           <Routes>
             <Route exact path="/" element={<Home />} />
+            <Route exact path="/appointments" element={<Appointments />}/>
           </Routes>
 
         </AppContext.Provider>
