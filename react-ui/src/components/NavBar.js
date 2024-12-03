@@ -28,7 +28,7 @@ const NavBar = () => {
       <AppBar position="static">
         <Toolbar>
         	
-          <Box sx={{display: 'flex', flexGrow: 4, justifyContent: 'center'}}>
+          <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'center'}}>
         		<Button component={Link} to="/appointments" color="inherit">Appointments</Button>
         		<Button component={Link} to="/doctors" color="inherit">Doctors</Button>
         		<Button component={Link} to="/patients" color="inherit">Patients</Button>
@@ -50,11 +50,17 @@ const NavBar = () => {
         		anchorEl={anchorEl}
         		onClose={() => setAnchorEl(null)}
         		open={open}>
-        		<MenuItem onClick={() => setAnchorEl(null)}>My Appointments</MenuItem>
+        		{auth ?
+        			<MenuItem onClick={() => setAnchorEl(null)}
+        			component={Link} to="/appointments"
+        			>My Appointments</MenuItem> : null}
         		<MenuItem onClick={() => {
         			setAnchorEl(null);
         			setAuth(!auth);
-        		}}>{auth ? <Typography>Logout</Typography> : <Typography>Login</Typography>}</MenuItem>
+        		}}>{auth ?
+	        		<Typography>Logout</Typography> :
+	        		<Typography>Login</Typography>}
+        		</MenuItem>
         	</Menu>
 
         </Toolbar>
