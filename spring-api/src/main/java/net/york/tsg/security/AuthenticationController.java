@@ -30,23 +30,24 @@ public class AuthenticationController {
         this.registration = registrations.findByRegistrationId("okta");
     }
 
-    @PreAuthorize("hasAuthority('Admin', 'Patient')")
-    @GetMapping("/api/auth/permissions")
-    public ResponseEntity<?> getUserPermissions(@AuthenticationPrincipal OAuth2User user) {
-        if (user == null) {
-            return new ResponseEntity<>("", HttpStatus.OK);
-        } else {
-            System.out.println(user.getAuthorities());
-            return ResponseEntity.ok().body(user.getAuthorities());
-        }
-    }
+    // Example of a role restricted endpoint
+    // @PreAuthorize("hasAnyAuthority('Admin','Patients')")
+    // @GetMapping("/api/auth/permissions")
+    // public ResponseEntity<?> getUserPermissions(@AuthenticationPrincipal OAuth2User user) {
+    //     if (user == null) {
+    //         return new ResponseEntity<>("", HttpStatus.OK);
+    //     } else {
+    //         System.out.println(user.getAuthorities());
+    //         return ResponseEntity.ok().body(user.getAuthorities());
+    //     }
+    // }
 
     @GetMapping("/api/auth")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
         if (user == null) {
             return new ResponseEntity<>("", HttpStatus.OK);
         } else {
-            return ResponseEntity.ok().body(user.getAttributes());
+            return ResponseEntity.ok().body(new User(user));
         }
     }
 
