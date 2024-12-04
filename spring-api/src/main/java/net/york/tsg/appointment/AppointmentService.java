@@ -52,6 +52,16 @@ public class AppointmentService {
 			);
 		return ResponseEntity.ok().body(optionalAppointment.get());
 	}
+
+	public ResponseEntity<?> getAllAppointmentsByUserEmail(String email) {
+		List<Appointment> appointments = appointmentRepository.findAllByUserEmail(email);
+		if (appointments.size() <= 0)
+			return new ResponseEntity<>(
+				"There are no appointments associated with the email provided.",
+				HttpStatus.NOT_FOUND);
+
+		return ResponseEntity.ok().body(appointments);
+	}
 	
 	public ResponseEntity<?> getAllAppointmentsByDoctor(Doctor doctor) {
 		if (doctor.getId() == null)
