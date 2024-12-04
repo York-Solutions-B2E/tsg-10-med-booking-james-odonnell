@@ -13,11 +13,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 
+import AuthenticationAPI from '../API/AuthenticationAPI';
 import {useAppContext, useThemeContext} from '../App';
 
 const NavBar = () => {
 
-	const {admin, auth, setAuth} = useAppContext();
+	const user = useAppContext();
 	const [theme, switchTheme] = useThemeContext();
 
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -29,9 +30,6 @@ const NavBar = () => {
         <Toolbar>
         	
           <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'center'}}>
-        		<Button component={Link} to="/appointments" color="inherit">Appointments</Button>
-        		<Button component={Link} to="/doctors" color="inherit">Doctors</Button>
-        		<Button component={Link} to="/patients" color="inherit">Patients</Button>
           </Box>
 
           <IconButton onClick={switchTheme} sx={{width: 48, height: 48}}>
@@ -45,23 +43,25 @@ const NavBar = () => {
         		sx={{width: 40, height: 40}}
         		onClick={(event) => setAnchorEl(event.currentTarget)} />
 
-        	<Menu
-        		id="basic-menu"
-        		anchorEl={anchorEl}
-        		onClose={() => setAnchorEl(null)}
-        		open={open}>
-        		{auth ?
-        			<MenuItem onClick={() => setAnchorEl(null)}
-        			component={Link} to="/appointments"
-        			>My Appointments</MenuItem> : null}
-        		<MenuItem onClick={() => {
-        			setAnchorEl(null);
-        			setAuth(!auth);
-        		}}>{auth ?
-	        		<Typography>Logout</Typography> :
-	        		<Typography>Login</Typography>}
-        		</MenuItem>
-        	</Menu>
+					{user != null ?
+	        	<Menu
+	        		id="basic-menu"
+	        		anchorEl={anchorEl}
+	        		onClose={() => setAnchorEl(null)}
+	        		open={open}>
+        				<MenuItem
+        					onClick={() => setAnchorEl(null)}
+        					component={Link} to="/appointments"><Typography>My Appointments</Typography></MenuItem>
+        				<MenuItem
+        					onClick={() => {AuthenticationAPI.logout()}}><Typography>Logout</Typography></MenuItem>
+        			</Menu> :
+        		<Menu
+	        		id="basic-menu"
+	        		anchorEl={anchorEl}
+	        		onClose={() => setAnchorEl(null)}
+	        		open={open}>
+        			<MenuItem onClick={() => {AuthenticationAPI.login()}}><Typography>Login</Typography></MenuItem>
+        		</Menu>}
 
         </Toolbar>
       </AppBar>
