@@ -5,6 +5,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 
+import NavBar from './components/NavBar';
+
 import Home from './pages/Home';
 import Appointments from './pages/Appointments';
 
