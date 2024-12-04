@@ -10,12 +10,15 @@ import java.util.List;
 @Data
 public class User {
 
+	private Long id;
 	private String email;
 	private String firstName;
 	private String lastName;
-	private Boolean admin = false;
+	private Boolean admin;
 
 	public User(OAuth2User user) {
+		id = 0L;
+		admin = false;
 		email = user.getAttribute("email");
 		firstName = user.getAttribute("given_name");
 		lastName = user.getAttribute("family_name");

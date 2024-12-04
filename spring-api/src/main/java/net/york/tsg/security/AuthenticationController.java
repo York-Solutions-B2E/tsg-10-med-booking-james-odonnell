@@ -2,7 +2,6 @@ package net.york.tsg.security;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -18,16 +17,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.Collections;
 import java.util.Map;
 
 @RestController
 public class AuthenticationController {
 
-    private final ClientRegistration registration;
+    private final AuthenticationService authenticationService;
 
-    public AuthenticationController(ClientRegistrationRepository registrations) {
-        this.registration = registrations.findByRegistrationId("okta");
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     // Example of a role restricted endpoint
@@ -44,27 +42,15 @@ public class AuthenticationController {
 
     @GetMapping("/api/auth")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
-        if (user == null) {
-            return new ResponseEntity<>("", HttpStatus.OK);
-        } else {
-            return ResponseEntity.ok().body(new User(user));
-        }
+        return authenticationService.getUser(user);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/api/logout")
     public ResponseEntity<?> logout(
             HttpServletRequest request,
             @AuthenticationPrincipal(expression = "idToken") OidcIdToken idToken) {
-
-        // send logout URL to client so they can initiate logout
-        String logoutUrl = this.registration.getProviderDetails()
-                .getConfigurationMetadata().get("end_session_endpoint").toString();
-
-        Map<String, String> logoutDetails = new HashMap<>();
-        logoutDetails.put("logoutUrl", logoutUrl);
-        logoutDetails.put("idToken", idToken.getTokenValue());
-        request.getSession(false).invalidate();
-        return ResponseEntity.ok().body(logoutDetails);
+        return authenticationService.logout(request, idToken);
     }
 
 }
