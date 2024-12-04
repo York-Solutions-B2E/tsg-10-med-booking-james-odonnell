@@ -67,12 +67,6 @@ public class PatientService {
 		if (patient.getLastName() != null && !patient.getLastName().isEmpty())
 			optionalPatient.get().setLastName(patient.getLastName());
 
-		if (patient.getEmail() != null && !patient.getEmail().isEmpty())
-			optionalPatient.get().setEmail(patient.getEmail());
-
-		if (patient.getPhoneNumber() != null && !patient.getPhoneNumber().isEmpty())
-			optionalPatient.get().setPhoneNumber(patient.getPhoneNumber());
-
 		return new ResponseEntity<>(optionalPatient.get(), HttpStatus.OK);
 	}
 	

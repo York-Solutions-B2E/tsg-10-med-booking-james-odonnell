@@ -39,13 +39,6 @@ public class Patient {
     @NotBlank
     private String lastName;
 
-    @NotBlank
-    @Column(unique = true)
-    private String email;
-    @NotBlank
-    @Column(unique = true)
-    private String phoneNumber;
-
     @NotNull
     private LocalDateTime dob;
 
