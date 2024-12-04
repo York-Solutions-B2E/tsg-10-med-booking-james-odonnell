@@ -39,9 +39,13 @@ const NavBar = () => {
           	}
           </IconButton>
 
-        	<AccountCircle
-        		sx={{width: 40, height: 40}}
-        		onClick={(event) => setAnchorEl(event.currentTarget)} />
+          {user != null ?
+	        	<AccountCircle
+	        		sx={{width: 40, height: 40}}
+	        		onClick={(event) => setAnchorEl(event.currentTarget)}
+	        	/> :
+	        	<Button color="inherit" onClick={() => {AuthenticationAPI.login()}}>Login</Button>
+	        }
 
 					{user != null ?
 	        	<Menu
@@ -51,16 +55,22 @@ const NavBar = () => {
 	        		open={open}>
         				<MenuItem
         					onClick={() => setAnchorEl(null)}
-        					component={Link} to="/appointments"><Typography>My Appointments</Typography></MenuItem>
+        					component={Link} to="/appointments">My Appointments
+        				</MenuItem>
         				<MenuItem
-        					onClick={() => {AuthenticationAPI.logout()}}><Typography>Logout</Typography></MenuItem>
+        					onClick={() => setAnchorEl(null)}
+        					component={Link} to="/booking">Booking
+        				</MenuItem>
+        				<MenuItem
+        					onClick={() => {AuthenticationAPI.logout()}}>Logout>
+      					</MenuItem>
         			</Menu> :
         		<Menu
 	        		id="basic-menu"
 	        		anchorEl={anchorEl}
 	        		onClose={() => setAnchorEl(null)}
 	        		open={open}>
-        			<MenuItem onClick={() => {AuthenticationAPI.login()}}><Typography>Login</Typography></MenuItem>
+        			<MenuItem onClick={() => {AuthenticationAPI.login()}}>Login</MenuItem>
         		</Menu>}
 
         </Toolbar>
