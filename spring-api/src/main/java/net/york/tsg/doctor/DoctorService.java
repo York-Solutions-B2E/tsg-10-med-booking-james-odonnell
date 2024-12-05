@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import jakarta.transaction.Transactional;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class DoctorService {
@@ -29,16 +30,26 @@ public class DoctorService {
 			doctorRepository.findAll(), HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> getDoctorById(Doctor doctor) {
-		if (doctor.getId() == null)
+	public ResponseEntity<?> getDoctorById(Long doctorId) {
+		if (doctorId == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor.getId());
+		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
 		if (optionalDoctor.isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctor.getId() + " not found.",
+				"Error: doctorId: " + doctorId + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 		return ResponseEntity.ok().body(optionalDoctor.get());
+	}
+
+	public ResponseEntity<?> getAllDoctorsBySpecialization(Long specializationId) {
+		List<Doctor> doctors = doctorRepository.findAllBySpecialization(specializationId);
+		if (doctors.size() <= 0)
+			return new ResponseEntity<>(
+				"Error: specializationId: " + specializationId + " not found.",
+				HttpStatus.NOT_FOUND
+			);
+		return ResponseEntity.ok().body(doctors);
 	}
 
 	public ResponseEntity<?> addNewDoctor(Doctor doctor) {
