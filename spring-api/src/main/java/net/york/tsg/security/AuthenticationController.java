@@ -27,19 +27,7 @@ public class AuthenticationController {
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
-
-    // Example of a role restricted endpoint
-    // @PreAuthorize("hasAnyAuthority('Admin','Patients')")
-    // @GetMapping("/api/auth/permissions")
-    // public ResponseEntity<?> getUserPermissions(@AuthenticationPrincipal OAuth2User user) {
-    //     if (user == null) {
-    //         return new ResponseEntity<>("", HttpStatus.OK);
-    //     } else {
-    //         System.out.println(user.getAuthorities());
-    //         return ResponseEntity.ok().body(user.getAuthorities());
-    //     }
-    // }
-
+    
     @GetMapping("/api/auth")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
         return authenticationService.getUser(user);
