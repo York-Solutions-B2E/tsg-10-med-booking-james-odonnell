@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import AuthenticationAPI from './API/AuthenticationAPI';
 
 import NavBar from './components/NavBar';
+import Booking from './pages/Booking';
 
 import Home from './pages/Home';
 
@@ -55,19 +56,21 @@ const App = () => {
 
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
-        <AppContext.Provider value={user}>
-          <CssBaseline />
-          <ThemeContext.Provider value={[theme, switchTheme]}>
-            <NavBar />
-          </ThemeContext.Provider>
+      <AppContext.Provider value={user}>
 
-          <Routes>
+        <ThemeContext.Provider value={[theme, switchTheme]}>
+          <NavBar />
+        </ThemeContext.Provider>
+
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes> {user != null ? (
+            <Route path="/booking" element={<Booking />} />) : null}
             <Route path="/*" element={<Home />} />
           </Routes>
+        </ThemeProvider>
 
-        </AppContext.Provider>
-      </ThemeProvider>
+      </AppContext.Provider>
     </div>
   );
 }
