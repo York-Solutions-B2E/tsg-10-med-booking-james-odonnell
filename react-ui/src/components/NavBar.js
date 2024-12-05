@@ -8,10 +8,10 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
 
 import AuthenticationAPI from '../API/AuthenticationAPI';
 import {useAppContext, useThemeContext} from '../App';
@@ -30,6 +30,22 @@ const NavBar = () => {
         <Toolbar>
         	
           <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'center'}}>
+          	<Paper elevation={4}>
+          		{user != null ?
+          			<Button
+          				component={Link} to="/booking"
+          				color="inherit"
+          				variant="contained">
+          				Book an appointment
+          			</Button> :
+          			<Button
+          				onClick={AuthenticationAPI.login}
+          				color="inherit"
+          				variant="contained">
+          				Book an appointment
+          			</Button>
+          		}
+          	</Paper>
           </Box>
 
           <IconButton onClick={switchTheme} sx={{width: 48, height: 48}}>
@@ -62,7 +78,7 @@ const NavBar = () => {
         					component={Link} to="/booking">Booking
         				</MenuItem>
         				<MenuItem
-        					onClick={() => {AuthenticationAPI.logout()}}>Logout>
+        					onClick={() => {AuthenticationAPI.logout()}}>Logout
       					</MenuItem>
         			</Menu> :
         		<Menu
@@ -71,7 +87,8 @@ const NavBar = () => {
 	        		onClose={() => setAnchorEl(null)}
 	        		open={open}>
         			<MenuItem onClick={() => {AuthenticationAPI.login()}}>Login</MenuItem>
-        		</Menu>}
+        		</Menu>
+        	}
 
         </Toolbar>
       </AppBar>
