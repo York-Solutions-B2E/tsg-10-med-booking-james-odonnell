@@ -12,6 +12,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 import AuthenticationAPI from '../API/AuthenticationAPI';
 import {useAppContext, useThemeContext} from '../App';
@@ -25,13 +26,22 @@ const NavBar = () => {
 	const open = Boolean(anchorEl);
 
 	return (
+
 		<Box sx={{flexGrow: 1}}>
       <AppBar position="static">
         <Toolbar>
         	
+        	<Typography variant="h5">York Medical<Link to="/" /></Typography>
           <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'center'}}>
           	<Paper elevation={4}>
           		{user != null ?
+          			user.admin ?
+          			<Button
+          				component={Link} to="/admin"
+          				color="inherit"
+          				variant="contained">
+          				Manage doctors
+          			</Button> :
           			<Button
           				component={Link} to="/booking"
           				color="inherit"
@@ -39,7 +49,8 @@ const NavBar = () => {
           				Book an appointment
           			</Button> :
           			<Button
-          				onClick={AuthenticationAPI.login}
+          				// onClick={AuthenticationAPI.login}
+          				component={Link} to="/booking"
           				color="inherit"
           				variant="contained">
           				Book an appointment
