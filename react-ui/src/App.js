@@ -64,8 +64,10 @@ const App = () => {
 
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Routes> {user != null ? (
-            <Route path="/booking" element={<Booking />} />) : null}
+          <Routes>
+            {user != null && !user.admin ? null : 
+              (<Route path="/booking" element={<Booking />} />)
+            }
             <Route path="/*" element={<Home />} />
           </Routes>
         </ThemeProvider>
