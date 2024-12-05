@@ -55,7 +55,7 @@ const PatientInfo = () => {
 				/>
 				<LocalizationProvider dateAdapter={AdapterDayjs}>
 					<DatePicker
-						label="Date of birth*"
+						label="Date of birth *"
 						required
 						disableFuture
 						minDate={dayjs("1900-01-01")}
@@ -65,6 +65,14 @@ const PatientInfo = () => {
 					/>
 				</LocalizationProvider>
 			</Box>
+
+			<TextField
+				id="email"
+				label="Email"
+				required
+				sx={{mt: 4, width: '100%'}}
+			/>
+
 			<Stack direction="row" sx={{width: '100%'}}>
 
 				<Stack sx={{mt: 4, width: '70%'}}>
@@ -87,18 +95,21 @@ const PatientInfo = () => {
 							disabled
 							id="city"
 							label="City"
+							required
 						/>
 					<Stack direction="row" sx={{mt: 4}}>
 						<TextField
 							disabled
 							id="state"
 							label="State"
+							required
 						/>
 						<TextField
 							disabled
 							id="zipCode"
 							label="Zip Code"
 							sx={{ml: 4}}
+							required
 						/>
 					</Stack>
 				</Stack>
