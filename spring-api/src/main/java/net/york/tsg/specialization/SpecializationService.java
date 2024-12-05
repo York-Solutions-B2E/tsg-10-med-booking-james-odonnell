@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class SpecializationService {
@@ -22,7 +22,13 @@ public class SpecializationService {
 	}
 
 	public ResponseEntity<?> getAllSpecializations() {
-		return new ResponseEntity<>(specializationRepository.findAll(), HttpStatus.OK);
+		List<Specialization> specializations = specializationRepository.findAll();
+		if (specializations.size() <= 0)
+			return new ResponseEntity<>(
+				"There are no specializations saved",
+				HttpStatus.NOT_FOUND);
+		System.out.println(specializations);
+		return new ResponseEntity<>(specializations, HttpStatus.OK);
 	}
 	
 }
