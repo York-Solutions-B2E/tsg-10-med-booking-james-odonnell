@@ -33,6 +33,8 @@ public class Patient {
     @GeneratedValue
     @Column(name = "patient_id")
     private Long id;
+    @NotBlank
+    private String email;
 
 	@NotBlank
     private String firstName;
