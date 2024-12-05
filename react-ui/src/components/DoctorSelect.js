@@ -11,7 +11,8 @@ import {useBookingContext} from '../pages/Booking';
 const DoctorSelect = () => {
 
 	const [specializations, setSpecializations] = useState([]);
-	const [doctorNames, setDoctorNames] = useState([]);
+	const [doctors, setDoctors] = useState([]);
+	const [defName, setDefName] = useState(null);
 	const {doctor} = useBookingContext();
 	let effect = false;
 
@@ -21,36 +22,66 @@ const DoctorSelect = () => {
 		effect = true;
 		(async () => {
 			const data = await DataAPI.get("specializations");
-			if (data != null && data.length >= 0) {
-				const names = [];
-				data.map((entry, index) => {names[index] = entry.name;})
-				setSpecializations(names);
+			if (data != null)
+				setSpecializations(data);
+			if (doctor.specialization.id != null) {
+				console.log("doctor.spec.id = null")
+				const data = await DataAPI.get("doctors/specialization", {
+					specializationId: doctor.specialization.id
+				});
+				setDoctors(data);
+				if (doctor.firstName !== '')
+					setDefName(doctor.firstName + " " + doctor.lastName);
 			}
 		})()
 	}, []);
 
 	const handleSpecializationSelect = async (value) => {
-		console.log(value);
 		if (value == null) {
 			doctor.specialization.id = null;
 			doctor.specialization.name = '';
-			setDoctorNames([]);
-			return;
+			doctor.firstName = '';
+			doctor.lastName = '';
+			setDoctors([]);
 		}
-		const id = specializations.indexOf(value) + 1;
-		doctor.specialization = {id: id, name: value}
+		let spec = null;
+		for (let i = 0;i < specializations.length;i++) {
+			if (specializations[i].name === value) {
+				spec = specializations[i];
+				break;
+			}
+		}
+		if (spec == null)
+			return;
+		console.log(spec);
 		const data = await DataAPI.get("doctors/specialization", {
-				specializationId: doctor.specialization.id
+			specializationId: spec.id
 		});
-		data.map((doc, index) => {
-			doctorNames[index] = doc.firstName + " " + doc.lastName;
-		});
+		if (data != null) {
+			doctor.specialization = spec;
+			console.log(doctor.specialization);
+			setDoctors(data);
+		}
 	}
 
 	const handleDoctorSelect = async (value) => {
 		console.log(value);
-		console.log(doctorNames.indexOf(value));
-		doctor.id = doctorNames.indexOf(value) + 1;
+		if (value == null) {
+			doctor.firstName = '';
+			doctor.lastName = '';
+			setDefName(null);
+			return;
+		}
+
+		for (let i = 0;i < doctors.length;i++) {
+			if (value === doctors[i].firstName + " " + doctors[i].lastName) {
+				doctor.firstName = doctors[i].firstName;
+				doctor.lastName = doctors[i].lastName;
+				setDefName(value);
+				break;
+			}
+		}
+		console.log(doctor);
 	}
 
 	return (
@@ -58,7 +89,8 @@ const DoctorSelect = () => {
 			<Grid container spacing={4}>
 				<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
 					<Autocomplete
-						options={specializations}
+						value={doctor.specialization.name}
+						options={specializations.map((spec) => spec.name)}
 						sx={{width: '50%'}}
 						onChange={(e, newValue) => handleSpecializationSelect(newValue)}
 						renderInput={(params) => <TextField {...params} label="Specialization"/>}
@@ -66,8 +98,10 @@ const DoctorSelect = () => {
 				</Grid>
 				<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
 					<Autocomplete
+						key={setDefName}
+						value={defName}
 						disabled={doctor.specialization.name === ''}
-						options={doctorNames}
+						options={doctors.map((doctor) => doctor.firstName + " " + doctor.lastName)}
 						sx={{width: '50%'}}
 						onChange={(e, newValue) => handleDoctorSelect(newValue)}
 						renderInput={(params) => <TextField {...params} label="Doctor"/>}

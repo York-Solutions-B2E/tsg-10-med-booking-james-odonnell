@@ -21,7 +21,7 @@ const Booking = () => {
 	const steps = [<PatientInfo />, <DoctorSelect />, null, null];
 	const [activeStep, setActiveStep] = useState(0);
 	const [patient] = useState({firstName: '', lastName: '', dob: new Date()});
-	const [doctor] = useState({firstName: '', lastName: '', specialization: -1});
+	const [doctor] = useState({firstName: '', lastName: '', specialization: {id: null, name: ''}});
 
 	const handleSubmit = () => {
 		if (patient.firstName === '' || patient.lastName === '') {
