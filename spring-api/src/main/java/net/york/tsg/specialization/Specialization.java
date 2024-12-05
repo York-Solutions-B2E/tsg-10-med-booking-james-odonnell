@@ -23,7 +23,7 @@ import jakarta.validation.constraints.NotBlank;
 @Setter
 @ToString
 @Entity
-@Table(name = "specailizations")
+@Table(name = "specializations")
 public class Specialization {
 
     @Id
@@ -33,5 +33,9 @@ public class Specialization {
 
     @NotBlank
     private String name;
-    
+
+    public Specialization(String name) {
+        this.name = name;
+    }
+
 }
