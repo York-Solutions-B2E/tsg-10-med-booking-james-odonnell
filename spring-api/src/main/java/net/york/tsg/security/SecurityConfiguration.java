@@ -35,7 +35,10 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests((requests) -> requests
             // allow anonymous access to the root page
             .requestMatchers("/", "/index.html", "/static/**",
-                    "/*.ico", "/*.json", "/*.png", "/api/auth").permitAll()
+                "/*.ico", "/*.json", "/*.png", "/api/auth",
+                "/doctors/specialization", "/appointments/patient",
+                "/specializations")
+                .permitAll()
 
             // all other requests
             .anyRequest().authenticated());
