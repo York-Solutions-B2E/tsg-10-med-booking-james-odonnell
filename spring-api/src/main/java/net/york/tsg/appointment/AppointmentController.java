@@ -34,23 +34,18 @@ public class AppointmentController {
 	}
 
 	@GetMapping(path = "doctor")
-	public ResponseEntity<?> getAllAppointmentsByDoctor(@RequestBody Doctor doctor) {
-		return appointmentService.getAllAppointmentsByDoctor(doctor);
+	public ResponseEntity<?> getAllAppointmentsByDoctor(@RequestHeader("doctorId") Long doctorId) {
+		return appointmentService.getAllAppointmentsByDoctor(doctorId);
 	}
 
 	@GetMapping(path = "patient")
-	public ResponseEntity<?> getAllAppointmentsByPatient(@RequestBody Patient patient) {
-		return appointmentService.getAllAppointmentsByPatient(patient);
+	public ResponseEntity<?> getAllAppointmentsByPatientEmail(@RequestHeader("patientEmail") String email) {
+		return appointmentService.getAllAppointmentsByPatientEmail(email);
 	}
 
 	@PostMapping
 	public ResponseEntity<?> scheduleNewAppointment(@Valid @RequestBody Appointment appointment) {
 		return appointmentService.scheduleNewAppointment(appointment);
-	}
-
-	@DeleteMapping
-	public ResponseEntity<?> cancelAppointment(@RequestBody Appointment appointment) {
-		return appointmentService.cancelAppointment(appointment);
 	}
 
 	@PutMapping

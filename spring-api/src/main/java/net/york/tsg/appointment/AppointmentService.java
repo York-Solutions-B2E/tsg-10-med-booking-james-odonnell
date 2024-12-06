@@ -53,52 +53,66 @@ public class AppointmentService {
 		return ResponseEntity.ok().body(optionalAppointment.get());
 	}
 
-	public ResponseEntity<?> getAllAppointmentsByUserEmail(String email) {
-		List<Appointment> appointments = appointmentRepository.findAllByUserEmail(email);
-		if (appointments.size() <= 0)
-			return new ResponseEntity<>(
-				"There are no appointments associated with the email provided.",
-				HttpStatus.NOT_FOUND);
+	// public ResponseEntity<?> getAllAppointmentsByUserEmail(String email) {
+	// 	List<Appointment> appointments = appointmentRepository.findAllByUserEmail(email);
+	// 	if (appointments.size() <= 0)
+	// 		return new ResponseEntity<>(
+	// 			"There are no appointments associated with the email provided.",
+	// 			HttpStatus.NOT_FOUND);
 
-		return ResponseEntity.ok().body(appointments);
-	}
+	// 	return ResponseEntity.ok().body(appointments);
+	// }
 	
-	public ResponseEntity<?> getAllAppointmentsByDoctor(Doctor doctor) {
-		if (doctor.getId() == null)
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		if (doctorRepository.findById(doctor.getId()).isEmpty())
+	public ResponseEntity<?> getAllAppointmentsByDoctor(Long doctorId) {
+		if (doctorRepository.findById(doctorId).isEmpty())
 			return new ResponseEntity<>(
-				"Error: no appointments found; doctor_id: " + doctor.getId() + ", does not exist.",
+				"Error: no appointments found; doctor_id: " + doctorId + ", does not exist.",
 				HttpStatus.NOT_FOUND
 			);
 
-		Optional<List<Appointment>> optionalAppointments = appointmentRepository.findAllByDoctorId(doctor.getId());
-		if (optionalAppointments.get().size() == 0)
+		List<Appointment> appointments = appointmentRepository.findAllByDoctorId(doctorId);
+		if (appointments.size() == 0)
 			return new ResponseEntity<>(
-				"Doctor: " + doctor.getId() + " has no appointments scheduled.",
+				"Doctor: " + doctorId + " has no appointments scheduled.",
 				HttpStatus.OK
 			);
 
-		return new ResponseEntity<>(optionalAppointments, HttpStatus.OK);
+		return new ResponseEntity<>(appointments, HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> getAllAppointmentsByPatient(Patient patient) {
-		if (patient.getId() == null)
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		if (patientRepository.findById(patient.getId()).isEmpty())
+	public ResponseEntity<?> getAllAppointmentsByPatient(Long patientId) {
+		if (patientRepository.findById(patientId).isEmpty())
 			return new ResponseEntity<>(
-				"Error: no appointments found; patient_id: " + patient.getId() + ", does not exist.",
+				"Error: no appointments found; patient_id: " + patientId + ", does not exist.",
 				HttpStatus.NOT_FOUND
 			);
 
-		Optional<List<Appointment>> optionalAppointments = appointmentRepository.findAllByPatientId(patient.getId());
-		if (optionalAppointments.get().size() == 0)
+		List<Appointment> appointments = appointmentRepository.findAllByPatientId(patientId);
+		if (appointments.size() == 0)
 			return new ResponseEntity<>(
-				"Patient: " + patient.getId() + " has no appointments scheduled.",
+				"Patient: " + patientId + " has no appointments scheduled.",
 				HttpStatus.OK
 			);
 
-		return new ResponseEntity<>(optionalAppointments, HttpStatus.OK);
+		return new ResponseEntity<>(appointments, HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> getAllAppointmentsByPatientEmail(String email) {
+		Optional<Patient> optionalPatient = patientRepository.findByEmail(email);
+		if (optionalPatient.isEmpty())
+			return new ResponseEntity<>(
+				"Error: email: " + email + " is not tied to any patients.",
+				HttpStatus.NOT_FOUND
+			);
+
+		List<Appointment> appointments = appointmentRepository.findAllByPatientId(optionalPatient.get().getId());
+		if (appointments.size() == 0)
+			return new ResponseEntity<>(
+				"Patient: " + optionalPatient.get().getId() + " has no appointments scheduled.",
+				HttpStatus.OK
+			);
+
+		return new ResponseEntity<>(appointments, HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> scheduleNewAppointment(Appointment appointment) {
@@ -161,8 +175,8 @@ public class AppointmentService {
 			optionalAppointment.get().setDateTime(appointment.getDateTime());
 		if (appointment.getStatus() != null)
 			optionalAppointment.get().setStatus(appointment.getStatus());
-		if (appointment.getIsInPerson() != null)
-			optionalAppointment.get().setIsInPerson(appointment.getIsInPerson());
+		if (appointment.getVisitType() != null)
+			optionalAppointment.get().setVisitType(appointment.getVisitType());
 		return new ResponseEntity<>(optionalAppointment.get(), HttpStatus.OK);
 	}
 

@@ -6,6 +6,8 @@ import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 
+import {useAppContext} from '../App';
+
 const columns = [
 	{field: 'id', headerName: 'ID', width: 130},
 	{field: 'doctor', headerName: 'Doctor', width: 130},
@@ -18,17 +20,20 @@ const columns = [
 
 const Appoinments = () => {
 
+	const user = useAppContext();
 	const [appointments, setAppointments] = useState([]);
 	const paginationModel = {page: 0, pageSize: 10};
 
 	useEffect(() => {
-		fetch('appointments', {mode: 'no-cors'})
+		if (user == null)
+			return;
+		fetch('appointments', {credentials: 'include'})
 			.then(response => response.text())
 			.then(body => {
 				if (body !== '') {
 					setAppointments(JSON.parse(body));
 				}
-			})
+			}).catch(error => console.error(error));
 	}, [setAppointments]);
 
 	const getDate = (appointmentDate) => {
