@@ -4,19 +4,40 @@ import Paper from '@mui/material/Paper';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
 import DataAPI from '../API/DataAPI';
 import {useBookingContext} from '../pages/Booking';
 
 const DoctorSelect = () => {
 
+	const {doctor, handleNext, handlePrevious} = useBookingContext();
 	const [specializations, setSpecializations] = useState([]);
 	const [doctors, setDoctors] = useState([]);
-	const [defName, setDefName] = useState(null);
-	const {doctor} = useBookingContext();
+	const [valid, setValid] = useState(false);
+	const [form, setForm] = useState({
+		specialization: {
+			id: doctor.specialization.id,
+			name: doctor.specialization.name,
+		},
+		doctor: {
+			id: doctor.id,
+			firstName: doctor.firstName,
+			lastName: doctor.lastName
+		},
+		fullName: doctor.firstName + " " + doctor.lastName
+	});
 	let effect = false;
 
 	useEffect(() => {
+		if (form.specialization.id != null && form.doctor.id != null)
+			setValid(true);
+		if (form.fullName === " ")
+			setForm({
+				...form,
+				fullName: ''
+			});
 		if (effect)
 			return;
 		effect = true;
@@ -24,91 +45,121 @@ const DoctorSelect = () => {
 			const data = await DataAPI.get("specializations");
 			if (data != null)
 				setSpecializations(data);
-			if (doctor.specialization.id != null) {
-				console.log("doctor.spec.id = null")
+			if (form.specialization.id != null) {
 				const data = await DataAPI.get("doctors/specialization", {
-					specializationId: doctor.specialization.id
+					specializationId: form.specialization.id
 				});
 				setDoctors(data);
-				if (doctor.firstName !== '')
-					setDefName(doctor.firstName + " " + doctor.lastName);
 			}
-		})()
-	}, []);
+		})();
+	}, [form]);
 
-	const handleSpecializationSelect = async (value) => {
-		if (value == null) {
-			doctor.specialization.id = null;
-			doctor.specialization.name = '';
-			doctor.firstName = '';
-			doctor.lastName = '';
-			setDoctors([]);
-		}
-		let spec = null;
-		for (let i = 0;i < specializations.length;i++) {
-			if (specializations[i].name === value) {
-				spec = specializations[i];
-				break;
+	const handleChange = (e, value, name) => {
+		let field;
+		const {id} = e.target;
+		const fieldIndex = parseInt(id.charAt(id.length - 1));
+		if (isNaN(fieldIndex)) {
+			setValid(false);
+			setForm({
+				...form,
+				doctor: {
+					id: null,
+					firstName: '',
+					lastName: ''
+				},
+				fullName: ''
+			});
+			if (name === "specialization") {
+				setForm({
+					specialization: {
+						id: null,
+						name: ''
+					},
+					doctor: {
+						id: null,
+						firstName: '',
+						lastName: ''
+					},
+					fullName: ''
+				});
 			}
-		}
-		if (spec == null)
 			return;
-		console.log(spec);
-		const data = await DataAPI.get("doctors/specialization", {
-			specializationId: spec.id
+		}
+		if (name === "specialization") {
+			field = {...specializations[fieldIndex]}
+		} else if (name === "doctor") {
+			field = {...doctors[fieldIndex]}
+			setValid(true);
+		}
+
+		setForm({
+			...form,
+			[name]:{
+				...form[name],
+				...field
+			},
+			fullName: (name === "doctor" ? value : '')
 		});
-		if (data != null) {
-			doctor.specialization = spec;
-			console.log(doctor.specialization);
-			setDoctors(data);
-		}
-	}
-
-	const handleDoctorSelect = async (value) => {
-		console.log(value);
-		if (value == null) {
-			doctor.firstName = '';
-			doctor.lastName = '';
-			setDefName(null);
-			return;
-		}
-
-		for (let i = 0;i < doctors.length;i++) {
-			if (value === doctors[i].firstName + " " + doctors[i].lastName) {
-				doctor.firstName = doctors[i].firstName;
-				doctor.lastName = doctors[i].lastName;
-				setDefName(value);
-				break;
-			}
-		}
-		console.log(doctor);
 	}
 
 	return (
-		<Paper elevation={5} sx={{width: '100%', padding: 4}}>
-			<Grid container spacing={4}>
-				<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
-					<Autocomplete
-						value={doctor.specialization.name}
-						options={specializations.map((spec) => spec.name)}
-						sx={{width: '50%'}}
-						onChange={(e, newValue) => handleSpecializationSelect(newValue)}
-						renderInput={(params) => <TextField {...params} label="Specialization"/>}
-					/>
+		<>
+			<Paper elevation={5} sx={{width: '100%', padding: 4}}>
+				<Grid container spacing={4}>
+					<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
+						<Autocomplete
+							id="specialization"
+							value={form.specialization.name}
+							options={specializations.map((spec) => spec.name)}
+							sx={{width: '50%'}}
+							onChange={(e, newValue) => handleChange(e, newValue, "specialization")}
+							renderInput={(params) => <TextField {...params} label="Specialization"/>}
+						/>
+					</Grid>
+					<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
+						<Autocomplete
+							id="doctor"
+							value={form.fullName}
+							disabled={form.specialization.name === ''}
+							options={doctors.map((doctor) => doctor.firstName + " " + doctor.lastName)}
+							sx={{width: '50%'}}
+							onChange={(e, newValue) => handleChange(e, newValue, "doctor")}
+							renderInput={(params) => <TextField {...params} label="Doctor"/>}
+						/>
+					</Grid>
 				</Grid>
-				<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
-					<Autocomplete
-						key={setDefName}
-						value={defName}
-						disabled={doctor.specialization.name === ''}
-						options={doctors.map((doctor) => doctor.firstName + " " + doctor.lastName)}
-						sx={{width: '50%'}}
-						onChange={(e, newValue) => handleDoctorSelect(newValue)}
-						renderInput={(params) => <TextField {...params} label="Doctor"/>}
-					/>
-				</Grid>
-			</Grid>
-		</Paper>
+				
+			</Paper>
+			<Box sx={{mt: 4, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+				<Button
+					variant="contained"
+					onClick={() => {
+						console.log(form);
+						doctor.id = form.doctor.id;
+						doctor.firstName = form.doctor.firstName;
+						doctor.lastName = form.doctor.lastName;
+						doctor.specialization.id = form.specialization.id;
+						doctor.specialization.name = form.specialization.name;
+						handlePrevious();
+					}}>
+					Previous
+				</Button>
+				<Button
+					variant="contained"
+					disabled={!valid}
+					onClick={() => {
+						console.log(form);
+						doctor.id = form.doctor.id;
+						doctor.firstName = form.doctor.firstName;
+						doctor.lastName = form.doctor.lastName;
+						doctor.specialization.id = form.specialization.id;
+						doctor.specialization.name = form.specialization.name;
+						handleNext();
+					}}>
+					Next Step
+				</Button>
+			</Box>
+		</>
 	);
 
 }
