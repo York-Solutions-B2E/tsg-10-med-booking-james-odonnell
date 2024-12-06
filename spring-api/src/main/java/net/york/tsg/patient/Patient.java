@@ -33,7 +33,9 @@ public class Patient {
     @GeneratedValue
     @Column(name = "patient_id")
     private Long id;
+
     @NotBlank
+    @Column(unique = true)
     private String email;
 
 	@NotBlank
