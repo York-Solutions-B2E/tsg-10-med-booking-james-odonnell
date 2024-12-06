@@ -60,10 +60,7 @@ public class Appointment {
     )
     private Patient patient;
 
-    @NotNull
-    private String userEmail;
-
-    private AppointmentStatus status = AppointmentStatus.PENDING;
-    private Boolean isInPerson = true;
+    private AppointmentStatus status = AppointmentStatus.CONFIRMED;
+    private AppointmentType visitType = AppointmentType.IN_PERSON;
 
 }
