@@ -24,7 +24,6 @@ const DateSelect = () => {
 	const [minTime, setMinTime] = useState(null);
 	const [minDate, setMinDate] = useState(dayjs());
 	const [patAppts, setPatAppts] = useState([]);
-	const [docAppts, setDocAppts] = useState([]);
 	const [form, setForm] = useState({
 		date: null,
 		time: null,
@@ -50,17 +49,15 @@ const DateSelect = () => {
 			}
 		}
 		(async () => {
-			const doctorAppointments = await DataAPI.get("appointments/doctors", {doctorId: doctor.id});
-			setDocAppts(doctorAppointments);
 			console.log(patient.email);
 			const patientAppointments = await DataAPI.get("appointments/patients", {patientEmail: patient.email});
 			setPatAppts(patientAppointments);
 		})();
-	}, [form.date]);
+	}, [form.date, fourPM, nineAM, now, patient.email, form]);
 
 	useEffect(() => {
-		setValid(form.date != valid && form.time != null && form.visitType != null);
-	}, [form])
+		setValid(form.date !== valid && form.time != null && form.visitType != null);
+	}, [form, valid])
 
 	const handleChange = (value, field) => {
 		console.log(value, field);
@@ -79,7 +76,7 @@ const DateSelect = () => {
 		if (patAppts != null)
 			for (let i = 0;i < patAppts.length;i++) {
 				let apptDate = dayjs(patAppts[i].dateTime).get('date');
-				if (date.get('date') === apptDate && patAppts[i].doctorId == doctor.id)
+				if (date.get('date') === apptDate && patAppts[i].doctorId === doctor.id)
 					return true;
 			}
 	}

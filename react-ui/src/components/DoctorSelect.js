@@ -28,19 +28,17 @@ const DoctorSelect = () => {
 		},
 		fullName: doctor.firstName + " " + doctor.lastName
 	});
-	let effect = false;
 
 	useEffect(() => {
 		if (form.specialization.id != null && form.doctor.id != null)
 			setValid(true);
-		if (form.fullName === " ")
+		if (form.fullName === " ") {
 			setForm({
 				...form,
 				fullName: ''
 			});
-		if (effect)
 			return;
-		effect = true;
+		}
 		(async () => {
 			const data = await DataAPI.get("specializations");
 			if (data != null)
