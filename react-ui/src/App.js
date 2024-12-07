@@ -7,7 +7,6 @@ import AuthenticationAPI from './API/AuthenticationAPI';
 
 import NavBar from './components/NavBar';
 import Booking from './pages/Booking';
-
 import Home from './pages/Home';
 
 const ThemeContext = createContext();
@@ -23,17 +22,15 @@ export const useAppContext = () => {
 const App = () => {
 
   const [user, setUser] = useState(null);
-  let effect = false;
 
   useEffect(() => {
-    if (effect) //useEffect gets called twice in dev mode, so this makes it only call once
+    if (user != null)
       return;
-    effect = true;
     (async () => {
       const response = await AuthenticationAPI.authenticate();
       setUser(response);
     })();
-  }, [setUser])
+  }, [user])
 
   const [theme, setTheme] = useState(
     createTheme({
@@ -44,12 +41,9 @@ const App = () => {
   );
 
   const switchTheme = () => {
-    let mode = 'light';
-    if (theme.palette.mode === 'light')
-      mode = 'dark';
     setTheme(createTheme({
       palette: {
-        mode: mode
+        mode: theme.palette.mode === 'light' ? 'dark': 'light'
       }
     }))
   }
@@ -65,9 +59,11 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            {user != null && !user.admin ? null : 
-              (<Route path="/booking" element={<Booking />} />)
-            }
+            {user != null && !user.admin ? null :(
+              <>
+                <Route path="/booking" element={<Booking />} />
+              </>
+            )}
             <Route path="/*" element={<Home />} />
           </Routes>
         </ThemeProvider>
