@@ -3,10 +3,12 @@ import dayjs from 'dayjs';
 import DataAPI from '../API/DataAPI';
 import {useBookingContext} from '../pages/Booking';
 import Modal from '../components/Modal';
+import {useAppContext} from '../App';
 
 const SubmissionModal = ({open, setOpen}) => {
 
 	const {patient, doctor, appointment} = useBookingContext();
+	const {navigate} = useAppContext();
 
 	const handleClose = () => {
 		console.log("close");
@@ -19,7 +21,7 @@ const SubmissionModal = ({open, setOpen}) => {
 		appointment.doctor = doctor;
 		appointment.patient.id = appointment.patient.id == null ? -1 : appointment.patient.id;
 		await DataAPI.post("appointments/new", {"content-type": "application/json"}, JSON.stringify(appointment));
-		window.location.href = "http://localhost:3000/";
+		navigate("/");
 	}
 
 	const title = "Are you sure you want to submit?"

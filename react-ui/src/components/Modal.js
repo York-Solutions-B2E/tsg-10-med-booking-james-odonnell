@@ -24,7 +24,7 @@ const Modal = ({title, content, actions, open, setOpen}) => {
 					<DialogContent key={index}>
 						<Divider />
 						<DialogTitle>{content.title}</DialogTitle>
-						<DialogContentText>{content.content}</DialogContentText>
+						{content.content}
 					</DialogContent>
 				)}
 			<DialogActions>
