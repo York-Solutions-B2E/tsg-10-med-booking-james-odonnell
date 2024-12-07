@@ -2,6 +2,8 @@ package net.york.tsg.appointment;
 
 import net.york.tsg.doctor.Doctor;
 import net.york.tsg.patient.Patient;
+import net.york.tsg.dto.DTOMapper;
+import net.york.tsg.dto.AppointmentDTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotNull;
 
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +36,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "appointments")
-public class Appointment {
+public class Appointment implements DTOMapper<AppointmentDTO> {
 
     @Id
     @GeneratedValue
@@ -42,7 +44,7 @@ public class Appointment {
     private Long id;
 
     @NotNull
-    private LocalDateTime dateTime;
+    private Instant dateTime;
 
     @NotNull
     @ManyToOne
@@ -62,5 +64,16 @@ public class Appointment {
 
     private AppointmentStatus status = AppointmentStatus.CONFIRMED;
     private AppointmentType visitType = AppointmentType.IN_PERSON;
+
+    public AppointmentDTO toDTO() {
+        return AppointmentDTO.builder()
+            .id(id)
+            .patientId(patient.getId())
+            .doctorId(doctor.getId())
+            .dateTime(dateTime)
+            .status(status)
+            .visitType(visitType)
+            .build();
+    }
 
 }
