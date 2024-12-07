@@ -11,6 +11,8 @@ import DoctorSelect from '../components/DoctorSelect';
 import DateSelect from '../components/DateSelect';
 import SubmissionModal from '../components/SubmissionModal';
 
+import {useAppContext} from '../App';
+
 const BookingContext = createContext();
 export const useBookingContext = () => {
 	return useContext(BookingContext);
@@ -18,6 +20,7 @@ export const useBookingContext = () => {
 
 const Booking = () => {
 
+	const {userEmail} = useAppContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const stepNames = ["Patient Information", "Choose a doctor", "Select a date"];
 	const steps = [<PatientInfo />, <DoctorSelect />, <DateSelect />];
@@ -26,7 +29,7 @@ const Booking = () => {
 		firstName: '',
 		lastName: '',
 		dob: null,
-		email: ''
+		email: userEmail
 	});
 	const [doctor] = useState({
 		id: null,
