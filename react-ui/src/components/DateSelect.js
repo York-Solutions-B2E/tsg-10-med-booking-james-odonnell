@@ -30,11 +30,19 @@ const DateSelect = () => {
 		visitType: null
 	});
 
-	const now = dayjs();
-	const nineAM = now.set('hour', 9).startOf('hour')
-	const fourPM = now.set('hour', 16).startOf('hour');
+	const [now] = useState(dayjs());
+	const [nineAM] = useState(now.set('hour', 9).startOf('hour'));
+	const [fourPM] = useState(now.set('hour', 16).startOf('hour'));
 
 	useEffect(() => {
+		if (form.date === null && form.visitType === null) {
+			(async () => {
+				console.log(patient.email);
+				const patientAppointments = await DataAPI.get("appointments/patients", {patientEmail: patient.email.toLowerCase()});
+				setPatAppts(patientAppointments);
+			})();
+			return;
+		}
 		console.log(form);
 		if (dayjs().isBefore(nineAM) || (form.date != null && dayjs().isBefore(form.date))) {
 			setMinTime(nineAM);
@@ -48,11 +56,6 @@ const DateSelect = () => {
 				setMinTime(time);
 			}
 		}
-		(async () => {
-			console.log(patient.email);
-			const patientAppointments = await DataAPI.get("appointments/patients", {patientEmail: patient.email});
-			setPatAppts(patientAppointments);
-		})();
 	}, [form.date, fourPM, nineAM, now, patient.email, form]);
 
 	useEffect(() => {
