@@ -6,6 +6,8 @@ import net.york.tsg.doctor.DoctorRepository;
 import net.york.tsg.patient.Patient;
 import net.york.tsg.patient.PatientRepository;
 
+import net.york.tsg.dto.AppointmentDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 
@@ -35,9 +38,17 @@ public class AppointmentService {
 		this.patientRepository = patientRepository;
 	}
 
+	private ArrayList<AppointmentDTO> asDTOs(List<Appointment> appointments) {
+		ArrayList<AppointmentDTO> dtos = new ArrayList<AppointmentDTO>();
+		for (Appointment appt : appointments)
+			if (appt.getStatus() != AppointmentStatus.CANCELLED)
+				dtos.add(appt.toDTO());
+		return dtos;
+	}
+
 	public ResponseEntity<?> getAllAppointments() {
 		return new ResponseEntity<>(
-			appointmentRepository.findAll(),
+			asDTOs(appointmentRepository.findAll()),
 			HttpStatus.OK);
 	}
 
@@ -50,18 +61,9 @@ public class AppointmentService {
 				"Error: appointment_id: " + appointment.getId() + " not found.",
 				HttpStatus.NOT_FOUND
 			);
-		return ResponseEntity.ok().body(optionalAppointment.get());
+		return ResponseEntity.ok().body(optionalAppointment.get().toDTO());
 	}
 
-	// public ResponseEntity<?> getAllAppointmentsByUserEmail(String email) {
-	// 	List<Appointment> appointments = appointmentRepository.findAllByUserEmail(email);
-	// 	if (appointments.size() <= 0)
-	// 		return new ResponseEntity<>(
-	// 			"There are no appointments associated with the email provided.",
-	// 			HttpStatus.NOT_FOUND);
-
-	// 	return ResponseEntity.ok().body(appointments);
-	// }
 	
 	public ResponseEntity<?> getAllAppointmentsByDoctor(Long doctorId) {
 		if (doctorRepository.findById(doctorId).isEmpty())
@@ -70,14 +72,9 @@ public class AppointmentService {
 				HttpStatus.NOT_FOUND
 			);
 
-		List<Appointment> appointments = appointmentRepository.findAllByDoctorId(doctorId);
-		if (appointments.size() == 0)
-			return new ResponseEntity<>(
-				"Doctor: " + doctorId + " has no appointments scheduled.",
-				HttpStatus.OK
-			);
-
-		return new ResponseEntity<>(appointments, HttpStatus.OK);
+		return new ResponseEntity<>(
+			asDTOs(appointmentRepository.findAllByDoctorId(doctorId)),
+			HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> getAllAppointmentsByPatient(Long patientId) {
@@ -87,14 +84,9 @@ public class AppointmentService {
 				HttpStatus.NOT_FOUND
 			);
 
-		List<Appointment> appointments = appointmentRepository.findAllByPatientId(patientId);
-		if (appointments.size() == 0)
-			return new ResponseEntity<>(
-				"Patient: " + patientId + " has no appointments scheduled.",
-				HttpStatus.OK
-			);
-
-		return new ResponseEntity<>(appointments, HttpStatus.OK);
+		return new ResponseEntity<>(
+			asDTOs(appointmentRepository.findAllByPatientId(patientId)),
+			HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> getAllAppointmentsByPatientEmail(String email) {
@@ -105,14 +97,9 @@ public class AppointmentService {
 				HttpStatus.NOT_FOUND
 			);
 
-		List<Appointment> appointments = appointmentRepository.findAllByPatientId(optionalPatient.get().getId());
-		if (appointments.size() == 0)
-			return new ResponseEntity<>(
-				"Patient: " + optionalPatient.get().getId() + " has no appointments scheduled.",
-				HttpStatus.OK
-			);
-
-		return new ResponseEntity<>(appointments, HttpStatus.OK);
+		return new ResponseEntity<>(
+			asDTOs(appointmentRepository.findAllByPatientId(optionalPatient.get().getId())),
+			HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> scheduleNewAppointment(Appointment appointment) {
@@ -124,18 +111,25 @@ public class AppointmentService {
 				HttpStatus.NOT_FOUND
 			);
 
-		Long patient_id = appointment.getPatient().getId();
-		Optional<Patient> optionalPatient = patientRepository.findById(patient_id);
-		if (optionalPatient.isEmpty())
-			return new ResponseEntity<>(
-				"Error: could not schedule appointment; patient_id: " + patient_id + ", does not exist.",
-				HttpStatus.NOT_FOUND
+		Patient patient = appointment.getPatient();
+		Optional<Patient> optionalPatient = patientRepository.findByEmail(patient.getEmail());
+		if (optionalPatient.isEmpty()) {
+			patientRepository.save(
+				Patient.builder()
+				.email(patient.getEmail())
+				.firstName(patient.getFirstName())
+				.lastName(patient.getLastName())
+				.dob(patient.getDob())
+				.build()
 			);
+			optionalPatient = patientRepository.findByEmail(patient.getEmail());
+		}
 
 		appointment.setDoctor(optionalDoctor.get());
 		appointment.setPatient(optionalPatient.get());
+		appointment.setStatus(AppointmentStatus.CONFIRMED);
 		appointmentRepository.save(appointment);
-		return new ResponseEntity<>(appointment, HttpStatus.OK);
+		return new ResponseEntity<>(appointment.toDTO(), HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> cancelAppointment(Appointment appointment) {
@@ -150,7 +144,7 @@ public class AppointmentService {
 
 		optionalAppointment.get().setStatus(AppointmentStatus.CANCELLED);
 
-		return new ResponseEntity<>(optionalAppointment.get(), HttpStatus.OK);
+		return new ResponseEntity<>(optionalAppointment.get().toDTO(), HttpStatus.OK);
 	}
 
 	@Transactional
@@ -177,7 +171,7 @@ public class AppointmentService {
 			optionalAppointment.get().setStatus(appointment.getStatus());
 		if (appointment.getVisitType() != null)
 			optionalAppointment.get().setVisitType(appointment.getVisitType());
-		return new ResponseEntity<>(optionalAppointment.get(), HttpStatus.OK);
+		return new ResponseEntity<>(optionalAppointment.get().toDTO(), HttpStatus.OK);
 	}
 
 }

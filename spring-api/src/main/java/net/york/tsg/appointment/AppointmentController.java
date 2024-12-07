@@ -33,22 +33,22 @@ public class AppointmentController {
 		return appointmentService.getAppointmentById(appointment);
 	}
 
-	@GetMapping(path = "doctor")
+	@GetMapping(path = "doctors")
 	public ResponseEntity<?> getAllAppointmentsByDoctor(@RequestHeader("doctorId") Long doctorId) {
 		return appointmentService.getAllAppointmentsByDoctor(doctorId);
 	}
 
-	@GetMapping(path = "patient")
+	@GetMapping(path = "patients")
 	public ResponseEntity<?> getAllAppointmentsByPatientEmail(@RequestHeader("patientEmail") String email) {
 		return appointmentService.getAllAppointmentsByPatientEmail(email);
 	}
 
-	@PostMapping
+	@PostMapping(path = "new")
 	public ResponseEntity<?> scheduleNewAppointment(@Valid @RequestBody Appointment appointment) {
 		return appointmentService.scheduleNewAppointment(appointment);
 	}
 
-	@PutMapping
+	@PutMapping(path = "update")
 	public ResponseEntity<?> updateAppointment(@RequestBody Appointment appointment) {
 		return appointmentService.updateAppointment(appointment);
 	}
