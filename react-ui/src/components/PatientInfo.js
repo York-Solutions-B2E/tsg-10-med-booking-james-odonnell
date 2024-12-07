@@ -11,6 +11,7 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 
 import {useBookingContext} from '../pages/Booking';
+import {validateName, validateEmail} from '../util/Validate';
 
 const PatientInfo = () => {
 
@@ -27,38 +28,7 @@ const PatientInfo = () => {
 		setValid(
 			!form.firstName.error && !form.lastName.error && !form.email.error && !form.dob.error &&
 			form.firstName.value !== '' && form.lastName.value !== '' && form.email.value !== '' && form.dob.value != null);
-	}, [form])
-
-	const validateName = (value) => {
-		if (value === '')
-			return false;
-		const reg = new RegExp("[a-z|A-Z|'|-]");
-		for (let i = 0;i < value.length;i++) {
-			if (!reg.test(value.charAt(i)))
-				return false;
-		}
-		return true;
-	}
-
-	const validateEmail = (value) => {
-		if (value === '')
-			return false;
-		let at = false;
-		const reg = new RegExp("[a-z|A-Z|0-9|+|.|']");
-		for (let i = 0;i < value.length;i++) {
-			if (value.charAt(i) === '@') {
-				if (at || i === 0)
-					return false;
-				at = true;
-				continue;
-			}
-			if (!reg.test(value.charAt(i)))
-				return false;
-		}
-		if (!at || value.charAt(value.length - 1) === '@')
-			return false;
-		return true;
-	}
+	}, [form]);
 
 	const handleChange = (value, name) => {
 		let error = false;
