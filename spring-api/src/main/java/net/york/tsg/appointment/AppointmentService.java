@@ -154,7 +154,7 @@ public class AppointmentService {
 		Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointment.getId());
 		if (optionalAppointment.isEmpty())
 			return new ResponseEntity<>(
-				"Error: could not reschedule appointment; appointment_id: " + appointment.getId() + ", does not exist.",
+				"Error: could not update appointment; appointment_id: " + appointment.getId() + ", does not exist.",
 				HttpStatus.NOT_FOUND
 			);
 
