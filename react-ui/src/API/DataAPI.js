@@ -41,6 +41,27 @@ class DataAPI {
 			return await response.text();
 		} catch (error) {
 			console.error(error);
+			return "";
+		}
+	}
+
+	static put = async (endpoint, headers, body) => {
+		if (endpoint === "" || endpoint === null)
+			return null;
+		endpoint = `http://localhost:3000/${endpoint}`;
+		try {
+			const response = await fetch(endpoint, {
+				method: 'PUT',
+				credentials: 'include',
+				headers: headers,
+				body: body
+			});
+			if (!response.ok)
+				throw new Error(`Response status: ${response.status}`);
+
+			return await response.text();
+		} catch (error) {
+			console.error(error);
 		}
 	}
 	
