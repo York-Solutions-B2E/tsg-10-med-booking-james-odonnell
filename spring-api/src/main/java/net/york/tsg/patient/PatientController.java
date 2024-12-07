@@ -29,7 +29,7 @@ public class PatientController {
 		return patientService.getPatientById(patient.getId());
 	}
 	
-	@PostMapping
+	@PostMapping(path = "new")
 	public ResponseEntity<?> addNewPatient(@Valid @RequestBody Patient patient) {
 		return patientService.addNewPatient(patient);
 	}

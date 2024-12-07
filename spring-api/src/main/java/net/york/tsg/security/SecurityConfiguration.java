@@ -36,13 +36,16 @@ public class SecurityConfiguration {
             .requestMatchers("/", "/index.html", "/static/**",
                 "/*.ico", "/*.json", "/*.png", "/api/auth",
                 "/doctors/specialization", "/specializations",
-                "/appointments/patient", "/appointments/doctor")
+                "/appointments/doctors", "/appointments/patients",
+                "/appointments/new", "/appointments/update",
+                 "/patients/update")
                 .permitAll()
-            // all other requests
             .anyRequest().authenticated());
             
         http.csrf((csrf) -> csrf
-            .ignoringRequestMatchers("/patients/new", "/appointments/new") //allow add new patients without authentication
+            .ignoringRequestMatchers("/patients/update",
+                "/appointments/patients", "/appointments/new",
+                "/appointments/doctors", "/appointments/update")
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()));
         http.addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class);
