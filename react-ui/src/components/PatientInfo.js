@@ -79,7 +79,8 @@ const PatientInfo = () => {
 							required
 							disableFuture
 							minDate={dayjs("1900-01-01")}
-							defaultValue={patient.dob == null ? dayjs() : dayjs(patient.dob)}
+							maxDate={dayjs().subtract(18, 'year')}
+							defaultValue={patient.dob == null ? null : dayjs(patient.dob)}
 							onChange={(date) => handleChange(date, "dob")}
 							sx={{ml: 4}}
 						/>
