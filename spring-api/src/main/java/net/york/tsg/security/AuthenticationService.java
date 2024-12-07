@@ -34,9 +34,8 @@ public class AuthenticationService {
 	}
 
 	public ResponseEntity<?> getUser(OAuth2User oAuth2User) {
-
 		if (oAuth2User == null) {
-            return new ResponseEntity<>("", HttpStatus.OK);
+            return new ResponseEntity<>("User not authenticated.", HttpStatus.NOT_FOUND);
         } else {
         	User appUser = new User(oAuth2User);
             return ResponseEntity.ok().body(appUser);
