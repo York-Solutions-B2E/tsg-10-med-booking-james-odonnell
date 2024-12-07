@@ -106,7 +106,7 @@ const DoctorSelect = () => {
 		<>
 			<Paper elevation={5} sx={{width: '100%', padding: 4}}>
 				<Grid container spacing={4}>
-					<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
+					<Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
 						<Autocomplete
 							id="specialization"
 							value={form.specialization.name}
@@ -116,7 +116,7 @@ const DoctorSelect = () => {
 							renderInput={(params) => <TextField {...params} label="Specialization"/>}
 						/>
 					</Grid>
-					<Grid item md={12} sx={{display: 'flex', justifyContent: 'center'}}>
+					<Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
 						<Autocomplete
 							id="doctor"
 							value={form.fullName}
