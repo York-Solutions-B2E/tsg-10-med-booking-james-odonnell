@@ -69,7 +69,7 @@ public class Appointment implements DTOMapper<AppointmentDTO> {
         return AppointmentDTO.builder()
             .id(id)
             .patientId(patient.getId())
-            .doctorId(doctor.getId())
+            .doctor(doctor)
             .dateTime(dateTime)
             .status(status)
             .visitType(visitType)
