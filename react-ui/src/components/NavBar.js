@@ -10,6 +10,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -19,7 +20,7 @@ import {useAppContext, useThemeContext} from '../App';
 
 const NavBar = () => {
 
-	const user = useAppContext();
+	const {user, admin} = useAppContext();
 	const [theme, switchTheme] = useThemeContext();
 
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -32,28 +33,34 @@ const NavBar = () => {
         <Toolbar>
         	
         	<Typography variant="h5">York Medical<Link to="/" /></Typography>
-          <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'center'}}>
+          <Box sx={{display: 'flex', justifyContent: 'center', flexGrow: 1}}>
           	<Paper elevation={4}>
-          		{user != null ?
-          			user.admin ?
-          			<Button
+          		{!user || !admin ?
+          			<ButtonGroup>
+        					<Button
+	          				component={Link} to="/booking"
+	          				color="inherit"
+	          				variant="contained">
+	          				Book an appointment
+	          			</Button>
+	          			<Button
+	          				component={Link} to="/"
+	          				color="inherit"
+	          				variant="contained">
+	          				Home
+	          			</Button>
+	          			<Button
+	          				component={Link} to="/myappointments/list"
+	          				color="inherit"
+	          				variant="contained">
+	          				My appointments
+	          			</Button>
+        				</ButtonGroup> :
+        				<Button
           				component={Link} to="/admin"
           				color="inherit"
           				variant="contained">
           				Manage doctors
-          			</Button> :
-          			<Button
-          				component={Link} to="/booking"
-          				color="inherit"
-          				variant="contained">
-          				Book an appointment
-          			</Button> :
-          			<Button
-          				// onClick={AuthenticationAPI.login}
-          				component={Link} to="/booking"
-          				color="inherit"
-          				variant="contained">
-          				Book an appointment
           			</Button>
           		}
           	</Paper>
@@ -66,7 +73,7 @@ const NavBar = () => {
           	}
           </IconButton>
 
-          {user != null ?
+          {user ?
 	        	<AccountCircle
 	        		sx={{width: 40, height: 40}}
 	        		onClick={(event) => setAnchorEl(event.currentTarget)}
@@ -74,9 +81,8 @@ const NavBar = () => {
 	        	<Button color="inherit" onClick={() => {AuthenticationAPI.login()}}>Login</Button>
 	        }
 
-					{user != null ?
+					{user ?
 	        	<Menu
-	        		id="basic-menu"
 	        		anchorEl={anchorEl}
 	        		onClose={() => setAnchorEl(null)}
 	        		open={open}>
@@ -93,7 +99,6 @@ const NavBar = () => {
       					</MenuItem>
         			</Menu> :
         		<Menu
-	        		id="basic-menu"
 	        		anchorEl={anchorEl}
 	        		onClose={() => setAnchorEl(null)}
 	        		open={open}>
