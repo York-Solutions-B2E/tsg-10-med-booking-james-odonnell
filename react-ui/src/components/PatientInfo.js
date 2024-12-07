@@ -25,8 +25,8 @@ const PatientInfo = () => {
 
 	useEffect(() => {
 		setValid(
-			!form.firstName.error && !form.lastName.error && !form.email.error &&
-			form.firstName.value !== '' && form.lastName.value !== '' && form.email.value !== '');
+			!form.firstName.error && !form.lastName.error && !form.email.error && !form.dob.error &&
+			form.firstName.value !== '' && form.lastName.value !== '' && form.email.value !== '' && form.dob.value != null);
 	}, [form])
 
 	const validateName = (value) => {
@@ -60,8 +60,7 @@ const PatientInfo = () => {
 		return true;
 	}
 
-	const handleChange = (e) => {
-		const {name, value} = e.target;
+	const handleChange = (value, name) => {
 		let error = false;
 		if (name === "firstName" || name === "lastName")
 			error = !validateName(value);
@@ -90,7 +89,7 @@ const PatientInfo = () => {
 						placeholder={patient.firstName}
 						value={form.firstName.value}
 						error={form.firstName.error}
-						onChange={(e) => handleChange(e)}
+						onChange={(e) => handleChange(e.target.value, e.target.name)}
 						sx={{width: '30%'}}
 					/>
 					<TextField
@@ -100,7 +99,7 @@ const PatientInfo = () => {
 						placeholder={patient.lastName}
 						value={form.lastName.value}
 						error={form.lastName.error}
-						onChange={(e) => handleChange(e)}
+						onChange={(e) => handleChange(e.target.value, e.target.name)}
 						sx={{ml: 4, width: '40%'}}
 					/>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -111,7 +110,7 @@ const PatientInfo = () => {
 							disableFuture
 							minDate={dayjs("1900-01-01")}
 							defaultValue={patient.dob == null ? dayjs() : dayjs(patient.dob)}
-							onChange={(date) => patient.dob = date}
+							onChange={(date) => handleChange(date, "dob")}
 							sx={{ml: 4}}
 						/>
 					</LocalizationProvider>
@@ -123,7 +122,7 @@ const PatientInfo = () => {
 					placeholder={patient.email}
 					value={form.email.value}
 					error={form.email.error}
-					onChange={(e) => handleChange(e)}
+					onChange={(e) => handleChange(e.target.value, e.target.name)}
 					required
 					sx={{mt: 4, width: '100%'}}
 				/>
@@ -194,6 +193,7 @@ const PatientInfo = () => {
 						patient.firstName = form.firstName.value;
 						patient.lastName = form.lastName.value;
 						patient.email = form.email.value;
+						patient.dob = form.dob.value;
 						console.log(patient);
 						handleNext();
 					}}>
