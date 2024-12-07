@@ -23,14 +23,13 @@ const MyAppointments = () => {
 			(async () => {
 				const data = await DataAPI.get("appointments/patients", {patientEmail: userEmail.toLowerCase()});
 				if (data === null)
-					setAppointments([]);
-				else
-					setAppointments(data);
+					navigate("/");
+				setAppointments(data);
 			})();
 		} else {
 			setModalOpen(true);
 		}
-	}, [userEmail, modalOpen, appointments]);
+	}, [userEmail, modalOpen, appointments, navigate]);
 
 	const handleModalChange = (value) => {
 		setModalInput({
@@ -41,7 +40,7 @@ const MyAppointments = () => {
 
 	return (
 		<Container sx={{display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
-			{appointments === null ? null : <AppointmentTable appointments={appointments} />}
+			{appointments === null ? null : <AppointmentTable appointments={appointments} setAppointments={setAppointments} />}
 			<Modal
 				open={modalOpen}
 				setOpen={setModalOpen}
@@ -61,9 +60,9 @@ const MyAppointments = () => {
 					}, {
 						title: "submit",
 						disabled: modalInput.error || modalInput.email == null,
-						action: (() => {
-						setUserEmail(modalInput.email);
-						setModalOpen(false);
+						action: (async () => {
+							setUserEmail(modalInput.email);
+							setModalOpen(false);
 					}
 				)}]} />
 		</Container>

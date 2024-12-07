@@ -8,7 +8,7 @@ const AppointmentRouter = () => {
 	return (
 		<Routes>
 			<Route path="/list" element={<MyAppointments />} />
-			<Route path="/edit" element={<EditAppointment />} />
+			<Route path="/edit/:id" element={<EditAppointment />} />
 		</Routes>
 	);
 
