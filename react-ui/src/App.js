@@ -2,11 +2,13 @@ import {useState, createContext, useContext, useEffect} from 'react';
 import {Routes, Route} from 'react-router-dom';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import {useNavigate} from 'react-router-dom';
 
 import AuthenticationAPI from './API/AuthenticationAPI';
 
 import NavBar from './components/NavBar';
 import Booking from './pages/Booking';
+import AppointmentRouter from './pages/appointments/AppointmentRouter';
 import Home from './pages/Home';
 
 const ThemeContext = createContext();
@@ -21,16 +23,21 @@ export const useAppContext = () => {
 
 const App = () => {
 
-  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [user, setUser] = useState(false);
+  const [admin, setAdmin] = useState(false);
+  const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
-    if (user != null)
-      return;
     (async () => {
       const response = await AuthenticationAPI.authenticate();
-      setUser(response);
+      if (response !== null) {
+        setUser(true);
+        if (response.admin)
+          setAdmin(true);
+      }
     })();
-  }, [user])
+  }, []);
 
   const [theme, setTheme] = useState(
     createTheme({
@@ -50,7 +57,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <AppContext.Provider value={user}>
+      <AppContext.Provider value={{navigate, user, admin, userEmail, setUserEmail}}>
 
         <ThemeContext.Provider value={[theme, switchTheme]}>
           <NavBar />
@@ -59,9 +66,10 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            {user != null && !user.admin ? null :(
+            {user !== false && !admin ? null :(
               <>
                 <Route path="/booking" element={<Booking />} />
+                <Route path="/myappointments/*" element={<AppointmentRouter />} />
               </>
             )}
             <Route path="/*" element={<Home />} />
