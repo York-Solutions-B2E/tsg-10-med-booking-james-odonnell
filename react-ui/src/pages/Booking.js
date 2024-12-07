@@ -9,6 +9,7 @@ import StepLabel from '@mui/material/StepLabel';
 import PatientInfo from '../components/PatientInfo';
 import DoctorSelect from '../components/DoctorSelect';
 import DateSelect from '../components/DateSelect';
+import SubmissionModal from '../components/SubmissionModal';
 
 const BookingContext = createContext();
 export const useBookingContext = () => {
@@ -17,6 +18,7 @@ export const useBookingContext = () => {
 
 const Booking = () => {
 
+	const [modalOpen, setModalOpen] = useState(false);
 	const stepNames = ["Patient Information", "Choose a doctor", "Select a date"];
 	const steps = [<PatientInfo />, <DoctorSelect />, <DateSelect />];
 	const [activeStep, setActiveStep] = useState(0);
@@ -36,13 +38,12 @@ const Booking = () => {
 		}
 	});
 	const [appointment] = useState({
-		dateTime: new Date(),
+		dateTime: null,
 		doctor: null,
 		patient: null,
 		status: null,
-		isInPerson: null
+		visitType: null
 	});
-	const [valid, setValid] = useState([false, false, false]);
 
 	const handlePrevious = () => {
 		setActiveStep(activeStep - 1)
@@ -55,6 +56,7 @@ const Booking = () => {
 	}
 
 	const handleSubmit = () => {
+		setModalOpen(true);
 	}
 
 	return (
@@ -73,8 +75,9 @@ const Booking = () => {
 				<Box sx={{mt: 4}}>
 					{steps[activeStep]}
 				</Box>
+				<SubmissionModal open={modalOpen} setOpen={setModalOpen} />
 			</BookingContext.Provider>
-			
+
 		</Container>
 	);
 }
