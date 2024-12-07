@@ -7,7 +7,7 @@ class AuthenticationAPI {
 
 	static async authenticate() {
 		try {
-			const response = await fetch('api/auth', {credentials: 'include'});
+			const response = await fetch('http://localhost:3000/api/auth', {credentials: 'include'});
 			if (!response.ok) {
 				throw new Error(`Response status: ${response.status}`);
 			}
@@ -23,6 +23,7 @@ class AuthenticationAPI {
 			return await JSON.parse(body);
 		} catch (error) {
 			console.error(error.message);
+			return null
 		}
 	}
 
@@ -36,7 +37,7 @@ class AuthenticationAPI {
 	static async logout() {
 		try {
 			const response = await fetch(
-				'api/logout', {
+				'http://localhost:3000/api/logout', {
 	      method: 'POST',
 	      credentials: 'include',
 	      headers: {'X-XSRF-TOKEN': getCookie('XSRF-TOKEN')}

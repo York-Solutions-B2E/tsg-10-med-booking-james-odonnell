@@ -4,6 +4,7 @@ class DataAPI {
 		if (endpoint === "" || endpoint == null)
 			return;
 		let data = null;
+		endpoint = `http://localhost:3000/${endpoint}`;
 		try {
 			const response = await fetch(endpoint, {
 				credentials: 'include',
@@ -26,6 +27,7 @@ class DataAPI {
 	static post = async (endpoint, headers, body) => {
 		if (endpoint === "" || endpoint == null)
 			return;
+		endpoint = `http://localhost:3000/${endpoint}`;
 		try {
 			const response = await fetch(endpoint, {
 				method: 'POST',
