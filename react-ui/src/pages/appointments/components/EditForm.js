@@ -16,8 +16,6 @@ import {DigitalClock} from '@mui/x-date-pickers/DigitalClock';
 const EditForm = (props) => {
 
 	const {
-		appointment,
-		setAppointment,
 		specializations,
 		doctors,
 		minDate,
@@ -58,13 +56,14 @@ const EditForm = (props) => {
 								disablePast
 								shouldDisableDate={appointmentConflicts}
 								minDate={minDate}
+								value={form.date}
 								onChange={(value) => handleChange(value, "date")}
 							/>
 						</Grid>
 						<Grid item md={2} sx={{mx: 4}}>
 							<Stack>
 								<DigitalClock
-									disabled={form.date == null}
+									disabled={form.date === null}
 									skipDisabled
 									minTime={minTime}
 									maxTime={dayjs().set('hour', 16).startOf('hour')}
