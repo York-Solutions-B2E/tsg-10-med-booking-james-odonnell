@@ -27,6 +27,8 @@ const AppointmentProvider = ({children}) => {
 					navigate("/");
 				setAppointments(data);
 			})();
+		} else {
+			navigate("/");
 		}
 	}, [userEmail, appointments, navigate]);
 
