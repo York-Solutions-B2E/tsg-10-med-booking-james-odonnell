@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 
+import {useAppointmentContext} from './AppointmentContext';
 import AppointmentTable from './components/AppointmentTable';
 import {useAppContext} from '../../App';
 import DataAPI from '../../API/DataAPI';
@@ -11,36 +12,21 @@ import {validateEmail} from '../../util/Validate';
 
 const MyAppointments = () => {
 
+	const {appointments, setAppointments} = useAppointmentContext();
 	const {navigate, userEmail, setUserEmail} = useAppContext();
-	const [appointments, setAppointments] = useState(null);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [modalInput, setModalInput] = useState({email: null, error: false});
 
 	useEffect(() => {
 		if (appointments !== null)
 			return;
-		if (userEmail !== null) {
-			(async () => {
-				const data = await DataAPI.get("appointments/patients", {patientEmail: userEmail.toLowerCase()});
-				if (data === null)
-					navigate("/");
-				setAppointments(data);
-			})();
-		} else {
+		if (userEmail === null)
 			setModalOpen(true);
-		}
-	}, [userEmail, modalOpen, appointments, navigate]);
-
-	const handleModalChange = (value) => {
-		setModalInput({
-			email: value,
-			error: !validateEmail(value)
-		})
-	}
+	}, [userEmail, modalOpen, appointments]);
 
 	return (
 		<Container sx={{display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
-			{appointments === null ? null : <AppointmentTable appointments={appointments} setAppointments={setAppointments} />}
+			{appointments === null ? null : <AppointmentTable />}
 			<Modal
 				open={modalOpen}
 				setOpen={setModalOpen}
@@ -52,7 +38,11 @@ const MyAppointments = () => {
 							label="Email"
 							error={modalInput.error}
 							required
-							onChange={e => handleModalChange(e.target.value)} />}]}
+							sx={{mt: 4}}
+							onChange={e => setModalInput({
+								email: e.target.value,
+								error: !validateEmail(e.target.value)
+							})} />}]}
 				actions={[{
 						title: "cancel",
 						disabled: false,
