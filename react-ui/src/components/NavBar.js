@@ -61,7 +61,7 @@ const NavBar = () => {
 	          			</Button>
         				</ButtonGroup> :
         				<Button
-          				component={Link} to="/admin"
+          				component={Link} to="/admin/doctors"
           				color="inherit"
           				variant="contained">
           				Manage doctors
