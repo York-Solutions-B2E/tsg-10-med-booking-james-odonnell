@@ -27,7 +27,7 @@ const Modal = ({title, warning, content, actions, open, setOpen}) => {
 
 				<DialogContent>
 				{content.map((content, index) =>
-					<>
+					<Box key={index}>
 						<Divider />
 						<Typography variant="h6" sx={{display: 'flex', justifyContent: 'center'}}>
 							{content.title}
@@ -35,7 +35,7 @@ const Modal = ({title, warning, content, actions, open, setOpen}) => {
 						<Box sx={{display: 'flex',justifyContent: 'center'}}>
 							{content.content}
 						</Box>
-					</>
+					</Box>
 				)}
 				</DialogContent>
 				<Box sx={{display: 'flex',justifyContent: 'center'}}>
