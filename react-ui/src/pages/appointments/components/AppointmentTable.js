@@ -10,10 +10,12 @@ import dayjs from 'dayjs';
 import Modal from '../../../components/Modal';
 import DataAPI from '../../../API/DataAPI';
 import {useAppContext} from '../../../App';
+import {useAppointmentContext} from '../AppointmentContext';
 
-const AppointmentTable = ({appointments, setAppointments}) => {
+const AppointmentTable = () => {
 
   const {navigate} = useAppContext();
+  const {appointments, setAppointments} = useAppointmentContext();
   const [open, setOpen] = useState(false);
   const [cancelApt, setCancelApt] = useState(null);
 
@@ -34,7 +36,7 @@ const AppointmentTable = ({appointments, setAppointments}) => {
         <>
           <Button
             onClick={() => {
-              navigate(`/myappointments/edit/${params.value.id}`);
+              navigate(`/myappointments/edit/${params.row.index}`);
             }}>
             Edit
           </Button>
@@ -68,8 +70,9 @@ const AppointmentTable = ({appointments, setAppointments}) => {
 		<Paper sx={{ height: 600, width: '100%' }}>
       <DataGrid
         disableRowSelectionOnClick
-        rows={appointments.map((appointment) => {
+        rows={appointments.map((appointment, index) => {
           return {
+            index: index,
             id: appointment.id,
             doctor: `${appointment.doctor.firstName} ${appointment.doctor.lastName}`,
             date: dayjs(appointment.dateTime).format("MM/DD"),
