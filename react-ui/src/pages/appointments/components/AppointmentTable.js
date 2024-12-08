@@ -99,7 +99,7 @@ const AppointmentTable = () => {
           open={open}
           setOpen={setOpen}
           title="Are you sure you want to cancel this appointment?"
-          warning="Warning: this action cannot be undone"
+          warning={<Typography color="red">Warning: this action cannot be undone</Typography>}
           content={[{
             title: "Appointment details",
             content:
@@ -111,10 +111,10 @@ const AppointmentTable = () => {
               </p>
           }]}
           actions={[{
-            title: "No, I changed my mind",
+            title: "No",
             action: (() => setOpen(false))
           }, {
-            title: "Yes, cancel my appointment",
+            title: "Yes",
             action: (() => cancel())
           }]}
         /> : null
