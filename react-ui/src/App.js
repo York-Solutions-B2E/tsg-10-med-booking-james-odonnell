@@ -9,6 +9,7 @@ import AuthenticationAPI from './API/AuthenticationAPI';
 import NavBar from './components/NavBar';
 import Booking from './pages/Booking';
 import AppointmentRouter from './pages/appointments/AppointmentRouter';
+import AdminRouter from './pages/admin/AdminRouter';
 import Home from './pages/Home';
 
 const ThemeContext = createContext();
@@ -66,10 +67,14 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            {user !== false && !admin ? null :(
+            {user !== false && admin ?
+              <Route path="/admin/*" element={<AdminRouter />} />
+            : (
               <>
                 <Route path="/booking" element={<Booking />} />
-                <Route path="/myappointments/*" element={<AppointmentRouter />} />
+                {userEmail !== null ?
+                  <Route path="/myappointments" element={<AppointmentRouter />} />
+                : null}
               </>
             )}
             <Route path="/*" element={<Home />} />
