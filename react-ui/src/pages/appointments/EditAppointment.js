@@ -4,7 +4,6 @@ import {useParams} from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
@@ -12,14 +11,16 @@ import {useAppContext} from '../../App';
 import DataAPI from '../../API/DataAPI';
 import {useAppointmentContext} from './AppointmentContext';
 import EditForm from './components/EditForm';
+import SubmissionModal from '../../components/SubmissionModal';
 
 const EditAppointment = () => {
 
 	const {index} = useParams();
-	const {navigate, userEmail, setUserEmail} = useAppContext();
+	const {navigate, userEmail} = useAppContext();
 	const {appointments, setAppointments} = useAppointmentContext();
+	const [modalOpen, setModalOpen] = useState(false);
 	const [specializations, setSpecializations] = useState([]);
-	const [appointment, setAppointment] = useState(appointments[index]);
+	const [appointment] = useState(appointments[index]);
 	const [doctors, setDoctors] = useState([]);
 	const [now] = useState(dayjs());
 	const [nineAM] = useState(now.set('hour', 9).startOf('hour'));
@@ -57,7 +58,7 @@ const EditAppointment = () => {
 				setDoctors(data);
 			}
 		})();
-	}, [userEmail, form.specialization]);
+	}, [userEmail, form.specialization, navigate]);
 
 	useEffect(() => {
 		if (dayjs().isBefore(nineAM) || (form.date != null && dayjs().isBefore(form.date))) {
@@ -72,17 +73,10 @@ const EditAppointment = () => {
 				setMinTime(time);
 			}
 		}
-	}, [form.date, fourPM, nineAM, now, form.date]);
+	}, [form.date, fourPM, nineAM, now]);
 
 	useEffect(() => {
 		console.log(form);
-		console.log(
-			form.specialization.id !== null &&
-			form.doctor.id !== null &&
-			form.date !== null &&
-			form.time !== null &&
-			form.visitType !== null
-		);
 		setValid(
 			form.specialization.id !== null &&
 			form.doctor.id !== null &&
@@ -116,6 +110,8 @@ const EditAppointment = () => {
 						firstName: '',
 						lastName: '',
 					},
+					date: null,
+					time: null,
 					fullName: ''
 				});
 				return;
@@ -133,6 +129,10 @@ const EditAppointment = () => {
 					lastName: ''
 				} : form.doctor
 			),
+			date: (type === "doctor" || type === "specialization" ?
+				null : form.date),
+			time: (type === "doctor" || type === "specialization" || type === "date" ?
+				null : form.time),
 			[type]: (type === "doctor" || type === "specialization" ?
 				{...field} : value),
 			fullName: (type === "doctor" ?
@@ -144,7 +144,7 @@ const EditAppointment = () => {
 
 	const appointmentConflicts = (date) => {
     let day = date.day();
-    if (day === 0 || day === 6)
+    if (day === 0 || day === 6 || form.doctor.id === null)
       return true;
 
     if (appointments != null) {
@@ -159,11 +159,36 @@ const EditAppointment = () => {
     return false;
   }
 
+  const confirmSubmit = async () => {
+  	console.log(form);
+  	let dateTime = dayjs(form.date).add(dayjs(form.time).get('hour'), 'hour');
+  	dateTime = dayjs(dateTime).add(dayjs(form.time).get('minute'), 'minute');
+  	let updatedAppointment = {
+  		id: appointment.id,
+  		dateTime: dateTime,
+  		doctor: {
+  			...form["doctor"],
+  			specialization: {
+  				...form["specialization"]
+  			}
+  		},
+  		visitType: form.visitType,
+  		status: (dayjs(dateTime) !== dayjs(appointment.dateTime) ?
+  			'RESCHEDULED' : 'CONFIRMED')
+  	}
+  	await DataAPI.put(
+  		"appointments/update",
+  		{"content-type": "application/json"},
+  		JSON.stringify(updatedAppointment));
+  	appointments.push(updatedAppointment);
+  	setAppointments(appointments.filter((appt, aptIndex) => aptIndex != index));
+  	setModalOpen(false);
+		navigate("/myappointments/list");
+  }
+
 	return (
 		<Container sx={{mt: 8}}>
 			<EditForm props={{
-				appointment,
-				setAppointment,
 				specializations,
 				doctors,
 				minDate,
@@ -172,12 +197,29 @@ const EditAppointment = () => {
 				handleChange,
 				appointmentConflicts}}
 			/>
+			<SubmissionModal
+				open={modalOpen}
+				setOpen={setModalOpen}
+				cancel={() => setModalOpen(false)}
+				confirmSubmit={confirmSubmit}
+				form={{form}}
+				patient={null}
+				doctor={{
+					...form["doctor"],
+					specialization: form.specialization
+				}}
+				specialization={form.specialization}
+				appointment={{
+					visitType: form.visitType
+				}}
+			/>
 			<Box sx={{display: 'flex', justifyContent: 'space-between', mt: 4}} >
 				<Button
 					onClick={() => navigate("/myappointments/list")}
 					variant="contained">
 					CANCEL</Button>
 				<Button
+					onClick={() => setModalOpen(true)}
 					variant="contained"
 					disabled={!valid}>
 					SAVE
