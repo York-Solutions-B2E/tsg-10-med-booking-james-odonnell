@@ -63,8 +63,8 @@ const Booking = () => {
 	}
 
 	return (
-		<Container sx={{mt: 4}}>
-			<Stepper activeStep={activeStep}>
+		<Container>
+			<Stepper activeStep={activeStep} sx={{mt: 2}}>
 				{stepNames.map((label, index) => {
 					return (
 						<Step key={index}>

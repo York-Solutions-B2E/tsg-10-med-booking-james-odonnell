@@ -31,8 +31,12 @@ const NavBar = () => {
 		<Box sx={{flexGrow: 1}}>
       <AppBar position="static">
         <Toolbar>
-        	
-        	<Typography variant="h5">York Medical<Link to="/" /></Typography>
+
+      		<Typography
+        		variant="h5">
+        		York Medical
+        	</Typography>
+
           <Box sx={{display: 'flex', justifyContent: 'center', flexGrow: 1}}>
           	<Paper elevation={4}>
           		{!user || !admin ?
