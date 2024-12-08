@@ -79,7 +79,7 @@ const DateSelect = () => {
 		if (patAppts != null)
 			for (let i = 0;i < patAppts.length;i++) {
 				let apptDate = dayjs(patAppts[i].dateTime).get('date');
-				if (date.get('date') === apptDate && patAppts[i].doctorId === doctor.id)
+				if (date.get('date') === apptDate && patAppts[i].doctor.id === doctor.id)
 					return true;
 			}
 	}
