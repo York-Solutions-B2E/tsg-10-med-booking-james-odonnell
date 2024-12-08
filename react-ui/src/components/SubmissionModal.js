@@ -1,32 +1,19 @@
 import dayjs from 'dayjs';
 
-import DataAPI from '../API/DataAPI';
-import {useBookingContext} from '../pages/Booking';
+import Typography from '@mui/material/Typography';
+
 import Modal from '../components/Modal';
-import {useAppContext} from '../App';
 
-const SubmissionModal = ({open, setOpen}) => {
+const SubmissionModal = ({open, setOpen, cancel, confirmSubmit, form, patient, doctor, specialization, appointment}) => {
 
-	const {patient, doctor, appointment} = useBookingContext();
-	const {navigate} = useAppContext();
-
-	const handleClose = () => {
-		console.log("close");
-		setOpen(false);
-	}
-
-	const submit = async () => {
-		patient.email = patient.email.toLowerCase();
-		appointment.patient = patient;
-		appointment.doctor = doctor;
-		appointment.patient.id = appointment.patient.id == null ? -1 : appointment.patient.id;
-		await DataAPI.post("appointments/new", {"content-type": "application/json"}, JSON.stringify(appointment));
-		navigate("/");
-	}
+	console.log(form);
 
 	const title = "Are you sure you want to submit?"
 
-	const content = [{
+	const warning = appointment.visitType === "IN_PERSON" ?
+		<Typography color="lightBlue">Please arrive 15 minutes<br/>before your appointment.</Typography> : null
+
+	const content = [ patient !== null ? {
 			title: "Patient information",
 			content:
 				<p>
@@ -36,19 +23,19 @@ const SubmissionModal = ({open, setOpen}) => {
 					Email: {patient.email}
 				</p>
 				
-		}, {
+		} : {}, {
 			title: "Doctor",
 			content:
 				<p>
 					Doctor: {doctor.firstName} {doctor.lastName}<br />
-					Specialization: {doctor.specialization.name}<br />
+					Specialization: {specialization.name}<br />
 				</p>
 		}, {
 			title: "Details",
 			content:
 				<p>
-					Date: {dayjs(appointment.dateTime).format("MM/DD/YYYY")}<br />
-					Time: {dayjs(appointment.dateTime).format("hh:mm A")}<br />
+					Date: {dayjs(form.date).format("MM/DD/YYYY")}<br />
+					Time: {dayjs(form.time).format("hh:mm A")}<br />
 					Visit type: {appointment.visitType}<br />
 				</p>
 		},
@@ -56,14 +43,23 @@ const SubmissionModal = ({open, setOpen}) => {
 
 	const actions = [{
 			title: "Cancel",
-			action: handleClose
+			action: cancel
 		}, {
 			title: "Submit",
-			action: submit
+			action: confirmSubmit
 		}
 	];
 
-	return <Modal title={title} content={content} actions={actions} open={open} setOpen={setOpen} />
+	return (
+		<Modal
+			title={title}
+			warning={warning}
+			content={content}
+			actions={actions}
+			open={open}
+			setOpen={setOpen}
+		/>
+	);
 
 }
 

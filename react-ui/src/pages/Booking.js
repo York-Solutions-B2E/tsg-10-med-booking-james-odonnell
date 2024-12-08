@@ -1,5 +1,7 @@
 import {useState, createContext, useContext} from 'react';
 
+import dayjs from 'dayjs';
+
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -12,6 +14,7 @@ import DateSelect from '../components/DateSelect';
 import SubmissionModal from '../components/SubmissionModal';
 
 import {useAppContext} from '../App';
+import DataAPI from '../API/DataAPI';
 
 const BookingContext = createContext();
 export const useBookingContext = () => {
@@ -20,7 +23,7 @@ export const useBookingContext = () => {
 
 const Booking = () => {
 
-	const {userEmail} = useAppContext();
+	const {userEmail, navigate} = useAppContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const stepNames = ["Patient Information", "Choose a doctor", "Select a date"];
 	const steps = [<PatientInfo />, <DoctorSelect />, <DateSelect />];
@@ -29,7 +32,7 @@ const Booking = () => {
 		firstName: '',
 		lastName: '',
 		dob: null,
-		email: userEmail
+		email: userEmail === '' || userEmail === null ? '' : userEmail
 	});
 	const [doctor] = useState({
 		id: null,
@@ -62,6 +65,15 @@ const Booking = () => {
 		setModalOpen(true);
 	}
 
+	const confirmSubmit = async () => {
+		patient.email = patient.email.toLowerCase();
+		appointment.patient = patient;
+		appointment.doctor = doctor;
+		appointment.patient.id = appointment.patient.id == null ? -1 : appointment.patient.id;
+		await DataAPI.post("appointments/new", {"content-type": "application/json"}, JSON.stringify(appointment));
+		navigate("/");
+	}
+
 	return (
 		<Container>
 			<Stepper activeStep={activeStep} sx={{mt: 2}}>
@@ -78,7 +90,20 @@ const Booking = () => {
 				<Box sx={{mt: 4}}>
 					{steps[activeStep]}
 				</Box>
-				<SubmissionModal open={modalOpen} setOpen={setModalOpen} />
+				<SubmissionModal
+					open={modalOpen}
+					setOpen={setModalOpen}
+					cancel={() => setModalOpen(false)}
+					confirmSubmit={confirmSubmit}
+					form={{
+						date: dayjs(appointment.dateTime),
+						time: dayjs(appointment.dateTime)
+					}}
+					patient={patient}
+					doctor={doctor}
+					specialization={doctor.specialization}
+					appointment={appointment}
+				/>
 			</BookingContext.Provider>
 
 		</Container>
