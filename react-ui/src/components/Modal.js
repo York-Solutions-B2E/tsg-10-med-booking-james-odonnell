@@ -8,9 +8,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 /**
- * @param {string} 																		title: The title text for the modal.
- * @param {object[{title: string, content: object}]}	content: The content to be shown on the modal.
- * @param {object[{title: string, action: function, disabled: boolean}]}	actions: The action the modal provides
+ * @Prop title: 	The title text for the modal.					{*}
+ * @Prop warning: Warning at the bottom of the modal		{*}
+ * @Required
+ * @Prop content: The content to be shown on the modal.	{array[object* {title: string, content: *}]}
+ * @Required
+ * @Prop actions: The actions the modal provides.				{array[object* {title: string, action: function, disabled: boolean}]}
 */
 const Modal = ({title, warning, content, actions, open, setOpen}) => {
 
