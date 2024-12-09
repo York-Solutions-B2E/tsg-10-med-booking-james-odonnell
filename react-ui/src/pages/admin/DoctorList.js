@@ -20,7 +20,7 @@ const DoctorList = () => {
 	return (
 		<Container sx={{mt: 4}}>
 			<DoctorTable doctors={doctors} handleDelete={handleDelete}/>
-			<Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
+			<Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'center', mt: 4}}>
 				<Button
 					onClick={() => navigate("/admin/doctors/new")}
 					variant="contained">

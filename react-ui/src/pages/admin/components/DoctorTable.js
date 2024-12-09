@@ -25,7 +25,7 @@ const DoctorTable = ({doctors, handleDelete}) => {
       			view
       		</Button>
       		<Button
-      			onClick={() => navigate(`/${params.row.index}/edit`)}>
+      			onClick={() => navigate(`/admin/doctors/${params.row.index}/edit`)}>
       			edit
       		</Button>
       		<Button
