@@ -22,7 +22,7 @@ const DoctorList = () => {
 			<DoctorTable doctors={doctors} handleDelete={handleDelete}/>
 			<Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
 				<Button
-					// onClick={() => navigate("/new")}
+					onClick={() => navigate("/admin/doctors/new")}
 					variant="contained">
 					new doctor
 				</Button>
