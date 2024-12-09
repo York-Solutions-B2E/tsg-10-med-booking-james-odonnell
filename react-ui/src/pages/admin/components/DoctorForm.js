@@ -35,14 +35,14 @@ const DoctorForm = ({handleChange, form, specializations}) => {
 					<Autocomplete
 						id="specialization"
 						sx={{width: '100%'}}
-						required
-						value={form.specialization.value}
+						value={form.specialization.value.name}
 						options={specializations.map((spec) => spec.name)}
-						onChange={(e, newValue) => handleChange(newValue, "specialization")}
+						onChange={(e, newValue) => {handleChange(e.target.id, "specialization")}}
 						renderInput={(params) =>
 							<TextField {...params}
+								required
 								error={form.specialization.error}
-								label="Specialization *"
+								label="Specialization"
 							/>
 						}
 					/>

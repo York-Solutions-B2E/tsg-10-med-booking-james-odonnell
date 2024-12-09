@@ -54,7 +54,7 @@ public class DoctorService {
 
 	public ResponseEntity<?> addNewDoctor(Doctor doctor) {
 		doctorRepository.save(doctor);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(doctor, HttpStatus.OK);
 	}
 
 	public ResponseEntity<?> removeDoctor(Doctor doctor) {

@@ -4,6 +4,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
+import {useAppContext} from '../../App';
 import {useAdminContext} from './AdminContext';
 import DataAPI from '../../API/DataAPI';
 import {validateName} from '../../util/Validate';
@@ -12,6 +13,7 @@ import DoctorForm from './components/DoctorForm';
 
 const NewDoctor = () => {
 
+	const {navigate} = useAppContext();
 	const {doctors, setDoctors} = useAdminContext();
 	const [specializations, setSpecializations] = useState(null);
 	const [modalOpen, setModalOpen] = useState(false);
@@ -26,7 +28,10 @@ const NewDoctor = () => {
 			error: false
 		},
 		specialization: {
-			value: '',
+			value: {
+				id: null,
+				name: ''
+			},
 			error: false
 		}
 	});
@@ -40,13 +45,14 @@ const NewDoctor = () => {
 			if (data !== '')
 				setSpecializations(data);
 		})();
-	}, []);
+	}, [specializations]);
 
 	useEffect(() => {
 		setValid(
 			form.firstName.value !== '' &&
 			form.lastName.value !== '' &&
-			form.specialization.value !== '' &&
+			form.specialization.value.name !== '' &&
+			form.specialization.value.id !== null &&
 			!form.firstName.error &&
 			!form.lastName.error &&
 			!form.specialization.error
@@ -54,6 +60,17 @@ const NewDoctor = () => {
 	}, [form]);
 
 	const handleChange = (value, field) => {
+		if (field === "specialization") {
+			const specIndex = parseInt(value.charAt(value.length - 1));
+			setForm({
+				...form,
+				[field]: {
+					"value": specializations[specIndex],
+					error: isNaN(specIndex) || specIndex < 0 || specIndex >= specializations.length
+				}
+			})
+			return;
+		}
 		setForm({
 			...form,
 			[field]: {
@@ -63,7 +80,24 @@ const NewDoctor = () => {
 		});
 	}
 
-	const handleSubmit = () => {}
+	const handleSubmit = async () => {
+		console.log({
+			firstName: form.firstName.value,
+			lastName: form.lastName.value,
+			specialization: form.specialization.value
+		});
+
+		const response = await DataAPI.post("doctors", {"content-type": "application/json"}, JSON.stringify({
+			firstName: form.firstName.value,
+			lastName: form.lastName.value,
+			specialization: form.specialization.value
+		}));
+		const doctor = await JSON.parse(response);
+		doctors.push(doctor);
+		setDoctors(doctors);
+		setModalOpen(false);
+		navigate("/admin/doctors");
+	}
 
 	return (
 		<Container sx={{mt: 4, width: '50%'}}>
@@ -83,7 +117,7 @@ const NewDoctor = () => {
 						<p>
 							First name: {form.firstName.value}<br/>
 							Last name: {form.lastName.value}<br/>
-							Specialization: {form.specialization.value}<br/>
+							Specialization: {form.specialization.value.name}<br/>
 						</p>
 				}]}
 				actions={[{
