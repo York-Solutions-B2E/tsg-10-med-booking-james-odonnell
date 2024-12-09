@@ -4,22 +4,69 @@ import Container from '@mui/material/Container';
 
 import {useAppContext} from '../../App';
 import {useAdminContext} from './AdminContext';
+import DataAPI from '../../API/DataAPI';
 import DoctorTable from './components/DoctorTable';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
+import Modal from '../../components/Modal';
 
 const DoctorList = () => {
 
 	const {navigate} = useAppContext();
 	const {doctors, setDoctors} = useAdminContext();
+	const [modalOpen, setModalOpen] = useState(false);
+	const [doctor, setDoctor] = useState({
+		firstName: '',
+		lastName: '',
+		specialization: {
+			name: ''
+		}
+	});
 
 	const handleDelete = (index) => {
-		console.log(index);
+		if (index < 0 || index >= doctors.length || isNaN(index))
+			return;
+		setDoctor(doctors[index]);
+		setModalOpen(true);
+	}
+
+	const handleConfirm = async () => {
+		console.log(doctor);
+    const response = await DataAPI.delete(
+      "doctors",
+      {"content-type": "application/json"},
+      JSON.stringify(doctor));
+
+    setDoctors(doctors.filter((doc) => doc.id !== doctor.id));
+    setModalOpen(false);
 	}
 
 	return (
 		<Container sx={{mt: 4}}>
 			<DoctorTable doctors={doctors} handleDelete={handleDelete}/>
+			<Modal
+				open={modalOpen}
+				setOpen={setModalOpen}
+				title="Delete doctor"
+				content={[{
+					content:
+						<p>
+							First name: {doctor.firstName}<br />
+							Last name: {doctor.lastName}<br />
+							Specialization: {doctor.specialization.name}<br />
+						</p>
+				}]}
+				actions={[{
+					title: "cancel",
+					action: (() => setModalOpen(false))
+				}, {
+					title: "confirm",
+					action: handleConfirm
+				}]}
+				warning={<Typography color="red">Warning: this action cannot be undone.</Typography>}
+			/>
 			<Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'center', mt: 4}}>
 				<Button
 					onClick={() => navigate("/admin/doctors/new")}
