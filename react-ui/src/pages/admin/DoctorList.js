@@ -45,8 +45,6 @@ const DoctorList = () => {
     	...doctor,
     	status: 'INACTIVE',
     });
-    doctors.push(doctor);
-    setDoctors(doctors.filter((doc) => doc.id !== doctor.id || doc.status === 'INACTIVE'));
     setModalOpen(false);
 	}
 
