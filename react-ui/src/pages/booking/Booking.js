@@ -24,7 +24,7 @@ export const useBookingContext = () => {
 
 const Booking = () => {
 
-	const {userEmail, navigate} = useAppContext();
+	const {navigate} = useAppContext();
 	const {patientInfo, setPatientInfo} = usePatientContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const stepNames = ["Patient Information", "Choose a doctor", "Select a date"];

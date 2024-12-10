@@ -15,7 +15,7 @@ import {useAppointmentContext} from '../AppointmentContext';
 const AppointmentTable = () => {
 
   const {navigate} = useAppContext();
-  const {appointments, setAppointments} = useAppointmentContext();
+  const {appointments} = useAppointmentContext();
   const [open, setOpen] = useState(false);
   const [cancelApt, setCancelApt] = useState(null);
 
@@ -33,6 +33,7 @@ const AppointmentTable = () => {
       minWidth: 160,
       flexGrow: 1,
       renderCell: ((params) => (
+        params.row.status === 'CANCELLED' ? null :
         <>
           <Button
             onClick={() => {

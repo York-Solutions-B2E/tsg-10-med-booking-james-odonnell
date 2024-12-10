@@ -13,7 +13,7 @@ import {validateEmail} from '../../util/Validate';
 const MyAppointments = () => {
 
 	const {navigate} = useAppContext();
-	const {appointments, setAppointments} = useAppointmentContext();
+	const {appointments} = useAppointmentContext();
 	const {patientInfo, setPatientInfo} = usePatientContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const [modalInput, setModalInput] = useState({email: null, error: false});
@@ -21,7 +21,7 @@ const MyAppointments = () => {
 	useEffect(() => {
 		if (appointments !== null)
 			return;
-		if (patientInfo === null)
+		if (patientInfo.email === '')
 			setModalOpen(true);
  	}, [patientInfo, appointments]);
 

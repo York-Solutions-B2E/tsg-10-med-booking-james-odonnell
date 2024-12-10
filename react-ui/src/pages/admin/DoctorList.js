@@ -15,7 +15,7 @@ import Modal from '../../components/Modal';
 const DoctorList = () => {
 
 	const {navigate} = useAppContext();
-	const {doctors, setDoctors} = useAdminContext();
+	const {doctors} = useAdminContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const [doctor, setDoctor] = useState({
 		firstName: '',
@@ -34,11 +34,13 @@ const DoctorList = () => {
 
 	const handleConfirm = async () => {
 		console.log(doctor);
-    const response = await DataAPI.delete(
-      "doctors",
-      {"content-type": "application/json",
-    		"doctorId": doctor.id},
-      JSON.stringify(doctor));
+    await DataAPI.delete(
+      "doctors", {
+      	"content-type": "application/json",
+    		"doctorId": doctor.id
+    	},
+      JSON.stringify(doctor)
+    );
 
     doctor.status = 'INACTIVE';
     setDoctor({
