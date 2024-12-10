@@ -7,7 +7,12 @@ export const usePatientContext = () => {
 
 const PatientProvider = ({children}) => {
 
-	const [patientInfo, setPatientInfo] = useState(false);
+	const [patientInfo, setPatientInfo] = useState({
+		email: '',
+		firstName: '',
+		lastName: '',
+		dob: null,
+	});
 
 	return (
 		<PatientContext.Provider value={{patientInfo, setPatientInfo}}>

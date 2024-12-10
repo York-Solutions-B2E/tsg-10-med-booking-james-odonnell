@@ -14,6 +14,7 @@ import DateSelect from './components/DateSelect';
 import SubmissionModal from '../../components/SubmissionModal';
 
 import {useAppContext} from '../../App';
+import {usePatientContext} from '../PatientContext';
 import DataAPI from '../../API/DataAPI';
 
 const BookingContext = createContext();
@@ -24,15 +25,16 @@ export const useBookingContext = () => {
 const Booking = () => {
 
 	const {userEmail, navigate} = useAppContext();
+	const {patientInfo, setPatientInfo} = usePatientContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const stepNames = ["Patient Information", "Choose a doctor", "Select a date"];
 	const steps = [<PatientInfo />, <DoctorSelect />, <DateSelect />];
 	const [activeStep, setActiveStep] = useState(0);
 	const [patient] = useState({
-		firstName: '',
-		lastName: '',
-		dob: null,
-		email: userEmail === '' || userEmail === null ? '' : userEmail
+		firstName: patientInfo.firstName,
+		lastName: patientInfo.lastName,
+		dob: patientInfo.dob,
+		email: patientInfo.email,
 	});
 	const [doctor] = useState({
 		id: null,
@@ -70,6 +72,12 @@ const Booking = () => {
 		appointment.patient = patient;
 		appointment.doctor = doctor;
 		appointment.patient.id = appointment.patient.id == null ? -1 : appointment.patient.id;
+		setPatientInfo({
+			email: patient.email,
+			firstName: patient.firstName,
+			lastName: patient.lastName,
+			dob: patient.dob,
+		});
 		await DataAPI.post("appointments/new", {"content-type": "application/json"}, JSON.stringify(appointment));
 		navigate("/");
 	}

@@ -3,25 +3,27 @@ import {useState, useEffect} from 'react';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 
-import {useAppointmentContext} from './AppointmentContext';
-import AppointmentTable from './components/AppointmentTable';
 import {useAppContext} from '../../App';
+import {useAppointmentContext} from './AppointmentContext';
+import {usePatientContext} from '../PatientContext';
+import AppointmentTable from './components/AppointmentTable';
 import Modal from '../../components/Modal';
 import {validateEmail} from '../../util/Validate';
 
 const MyAppointments = () => {
 
+	const {navigate} = useAppContext();
 	const {appointments, setAppointments} = useAppointmentContext();
-	const {navigate, userEmail, setUserEmail} = useAppContext();
+	const {patientInfo, setPatientInfo} = usePatientContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const [modalInput, setModalInput] = useState({email: null, error: false});
 
 	useEffect(() => {
 		if (appointments !== null)
 			return;
-		if (userEmail === null)
+		if (patientInfo === null)
 			setModalOpen(true);
- 	}, [userEmail, appointments]);
+ 	}, [patientInfo, appointments]);
 
 	return (
 		<Container sx={{display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
@@ -51,7 +53,10 @@ const MyAppointments = () => {
 						disabled: modalInput.error || modalInput.email == null,
 						action: (async () => {
 							setModalOpen(false);
-							setUserEmail(modalInput.email);
+							setPatientInfo({
+								...patientInfo,
+								email: modalInput.email,
+							});
 					}
 				)}]} />
 		</Container>
