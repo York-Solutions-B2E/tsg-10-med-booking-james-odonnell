@@ -38,7 +38,8 @@ const DateSelect = () => {
 		if (form.date === null && form.visitType === null) {
 			(async () => {
 				console.log(patient.email);
-				const patientAppointments = await DataAPI.get("appointments/patients", {patientEmail: patient.email.toLowerCase()});
+				const patientAppointments = await DataAPI.get("appointments/patients",
+						{patientEmail: patient.email.toLowerCase()});
 				setPatAppts(patientAppointments);
 			})();
 			return;
@@ -79,7 +80,9 @@ const DateSelect = () => {
 		if (patAppts != null)
 			for (let i = 0;i < patAppts.length;i++) {
 				let apptDate = dayjs(patAppts[i].dateTime).get('date');
-				if (date.get('date') === apptDate && patAppts[i].doctor.id === doctor.id)
+				if (date.get('date') === apptDate &&
+						patAppts[i].status !== 'CANCELLED' && 
+						patAppts[i].doctor.id === doctor.id)
 					return true;
 			}
 	}
