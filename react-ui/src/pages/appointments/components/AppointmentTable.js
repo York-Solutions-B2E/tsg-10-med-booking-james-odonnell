@@ -19,14 +19,14 @@ const AppointmentTable = () => {
   const [open, setOpen] = useState(false);
   const [cancelApt, setCancelApt] = useState(null);
 
-  const paginationModel = { page: 0, pageSize: 10 };
+  const paginationModel = {page: 0, pageSize: 10};
   const columns = [
-    { field: 'id', headerName: 'ID', minWidth: 100 },
-    { field: 'doctor', headerName: 'Doctor', minWidth: 150 },
-    { field: 'date', headerName: 'Date', minWidth: 100},
-    { field: 'time', headerName: 'Time', minWidth: 100},
-    { field: 'visitType', headerName: 'Visit Type', minWidth: 155 },
-    { field: 'status', headerName: 'Status', minWidth: 155 },
+    {field: 'id', headerName: 'ID', minWidth: 100},
+    {field: 'doctor', headerName: 'Doctor', minWidth: 150},
+    {field: 'date', headerName: 'Date', minWidth: 100},
+    {field: 'time', headerName: 'Time', minWidth: 100},
+    {field: 'visitType', headerName: 'Visit Type', minWidth: 155},
+    {field: 'status', headerName: 'Status', minWidth: 155},
     {
       field: 'actions',
       headerName: 'Actions',
@@ -67,7 +67,7 @@ const AppointmentTable = () => {
   }
 
 	return (
-		<Paper sx={{ height: 600, width: '100%' }}>
+		<Paper sx={{height: 630, width: '100%'}}>
       <DataGrid
         disableRowSelectionOnClick
         rows={appointments.map((appointment, index) => {
@@ -83,9 +83,9 @@ const AppointmentTable = () => {
           }
         })}
         columns={columns}
-        initialState={{ pagination: { paginationModel } }}
+        initialState={{pagination: {paginationModel}}}
         pageSizeOptions={[5, 10]}
-        sx={{ border: 0 }}
+        sx={{border: 0}}
         slots={{
           noRowsOverlay: (() => (
             <Box sx={{display: 'flex', justifyContent: 'center', alignContent: 'center', height: '100%', p: 25}}>
