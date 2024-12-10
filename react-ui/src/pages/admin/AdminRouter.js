@@ -3,7 +3,6 @@ import {Routes, Route} from 'react-router-dom';
 import AdminProvider from './AdminContext';
 import DoctorList from './DoctorList';
 import NewDoctor from './NewDoctor';
-import DoctorView from './DoctorView';
 import EditDoctor from './EditDoctor';
 
 const AdminRouter = () => {
@@ -13,8 +12,7 @@ const AdminRouter = () => {
 			<Routes>
 				<Route path="/doctors" element={<DoctorList />} />
 				<Route path="/doctors/new" element={<NewDoctor />} />
-				<Route path="/doctors/:idnex" element={<DoctorView />} />
-				<Route path="/doctors/:index/edit" element={<EditDoctor />} />
+				<Route path="/doctors/edit/:index" element={<EditDoctor />} />
 			</Routes>
 		</AdminProvider>
 	);

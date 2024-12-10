@@ -24,11 +24,7 @@ const DoctorTable = ({doctors, handleDelete}) => {
         params.row.status === 'INACTIVE' ? null :
       	<>
       		<Button
-      			onClick={() => navigate(`/admin/doctors/${params.row.index}`)}>
-      			view
-      		</Button>
-      		<Button
-      			onClick={() => navigate(`/admin/doctors/${params.row.index}/edit`)}>
+      			onClick={() => navigate(`/admin/doctors/edit/${params.row.index}`)}>
       			edit
       		</Button>
       		<Button
