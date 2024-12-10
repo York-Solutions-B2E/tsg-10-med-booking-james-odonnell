@@ -9,6 +9,7 @@ const DoctorTable = ({doctors, handleDelete}) => {
 	const {navigate} = useAppContext();
 
 	const paginationModel = {page: 0, pageSize: 25};
+  const sortingModel = {field: 'id', sorct: 'desc'};
   const columns = [
     {field: 'id', headerName: 'ID', minWidth: 100},
     {field: 'doctor', headerName: 'Doctor', minWidth: 150},
@@ -43,7 +44,12 @@ const DoctorTable = ({doctors, handleDelete}) => {
 			<DataGrid
 				disableRowSelectionOnClick
 				columns={columns}
-				initialState={{pagination: {paginationModel}}}
+				initialState={{
+          pagination: {paginationModel},
+          sorting: {
+            sortModel: [sortingModel],
+          }
+        }}
         pageSizeOptions={[10, 25]}
         rows={doctors.map((doctor, index) => {
         	return {
