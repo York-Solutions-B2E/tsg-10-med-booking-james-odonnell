@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class DoctorService {
@@ -51,7 +52,11 @@ public class DoctorService {
 
 	public ResponseEntity<?> getAllDoctorsBySpecialization(Long specializationId) {
 		List<Doctor> doctors = doctorRepository.findAllBySpecialization(specializationId);
-		return ResponseEntity.ok().body(doctors);
+		ArrayList<Doctor> activeDoctors = new ArrayList<Doctor>();
+		for (Doctor doctor : doctors)
+			if (doctor.getStatus() == DoctorStatus.ACTIVE)
+				activeDoctors.add(doctor);
+		return ResponseEntity.ok().body(activeDoctors);
 	}
 
 	public ResponseEntity<?> addNewDoctor(Doctor doctor) {
