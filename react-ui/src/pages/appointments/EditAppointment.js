@@ -22,7 +22,7 @@ const EditAppointment = () => {
 	const {appointments, setAppointments} = useAppointmentContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const [specializations, setSpecializations] = useState([]);
-	const [appointment, setAppointment] = useState(appointments[index]);
+	const [appointment] = useState(appointments[index]);
 	const [doctors, setDoctors] = useState([]);
 	const [now] = useState(dayjs());
 	const [nineAM] = useState(now.set('hour', 9).startOf('hour'));
@@ -182,8 +182,9 @@ const EditAppointment = () => {
   		"appointments/update",
   		{"content-type": "application/json"},
   		JSON.stringify(updatedAppointment));
-  	appointments.push(updatedAppointment);
-  	setAppointments(appointments.filter((appt, aptIndex) => aptIndex != index));
+
+  	appointments[index] = updatedAppointment;
+  	setAppointments(appointments);
   	setModalOpen(false);
 		navigate("/myappointments/list");
   }

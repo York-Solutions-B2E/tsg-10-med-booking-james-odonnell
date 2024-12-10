@@ -17,7 +17,7 @@ const EditDoctor = () => {
 	const {index} = useParams();
 	const {navigate} = useAppContext();
 	const {doctors, setDoctors} = useAdminContext();
-	const [doctor, setDoctor] = useState(doctors[index]);
+	const [doctor] = useState(doctors[index]);
 	const [specializations, setSpecializations] = useState(null);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [valid, setValid] = useState(false);
@@ -67,9 +67,18 @@ const EditDoctor = () => {
 			const specIndex = parseInt(value.charAt(value.length - 1));
 			setForm({
 				...form,
-				[field]: {
-					"value": specializations[specIndex],
-					error: isNaN(specIndex) || specIndex < 0 || specIndex >= specializations.length
+				[field]: isNaN(specIndex) || specIndex < 0 || specIndex >= specializations.length ? {
+					value: {
+						id: null,
+						name: '',
+					},
+					error: true,
+				} : {
+					value: {
+						id: specializations[specIndex].id,
+						name: specializations[specIndex].name,
+					},
+					error: false,
 				}
 			})
 			return;
@@ -97,8 +106,9 @@ const EditDoctor = () => {
 			specialization: form.specialization.value
 		}));
 		const updatedDoctor = await JSON.parse(response);
-		doctors.push(updatedDoctor);
-		setDoctors(doctors.filter((doc, i) => i != index));
+
+		doctors[index] = updatedDoctor;
+		setDoctors(doctors);
 		setModalOpen(false);
 		navigate("/admin/doctors");
 	}
