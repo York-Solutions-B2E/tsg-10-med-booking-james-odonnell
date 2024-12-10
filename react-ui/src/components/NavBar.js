@@ -16,7 +16,7 @@ import {useAppContext, useThemeContext} from '../App';
 
 const NavBar = () => {
 
-	const {user, admin} = useAppContext();
+	const {admin} = useAppContext();
 	const [theme, switchTheme] = useThemeContext();
 
 	return (
@@ -32,7 +32,7 @@ const NavBar = () => {
 
           <Box sx={{display: 'flex', justifyContent: 'center', flexGrow: 1}}>
           	<Paper elevation={4}>
-          		{!user || !admin ?
+          		{!admin ?
           			<ButtonGroup>
         					<Button
 	          				component={Link} to="/booking"
@@ -65,12 +65,10 @@ const NavBar = () => {
 
           <IconButton onClick={switchTheme} sx={{width: 48, height: 48}}>
           	{theme.palette.mode === 'light' ?
-          		<DarkModeIcon /> :
-          		<LightModeIcon />
-          	}
+          		<DarkModeIcon /> : <LightModeIcon />}
           </IconButton>
 
-          {user ? <Button color="inherit" onClick={() => {AuthenticationAPI.logout()}}>Logout</Button>
+          {admin ? <Button color="inherit" onClick={() => {AuthenticationAPI.logout()}}>Logout</Button>
 	        	: <Button color="inherit" onClick={() => {AuthenticationAPI.login()}}>Login</Button>}
 	        
 
