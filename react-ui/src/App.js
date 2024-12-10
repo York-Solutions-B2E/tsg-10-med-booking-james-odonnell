@@ -8,7 +8,6 @@ import AuthenticationAPI from './API/AuthenticationAPI';
 
 import NavBar from './components/NavBar';
 import AdminRouter from './pages/admin/AdminRouter';
-import PatientProvider from './pages/PatientContext';
 import PatientRouter from './pages/PatientRouter';
 
 const ThemeContext = createContext();
