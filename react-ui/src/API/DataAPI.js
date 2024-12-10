@@ -1,3 +1,8 @@
+function getCookie(key) {
+  var b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
+  return b ? b.pop() : "";
+}
+
 class DataAPI {
 
 	static get = async(endpoint, headers) => {
@@ -28,6 +33,7 @@ class DataAPI {
 		if (endpoint === "" || endpoint == null)
 			return;
 		endpoint = `http://localhost:3000/${endpoint}`;
+		headers = {...headers, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN')};
 		try {
 			const response = await fetch(endpoint, {
 				method: 'POST',
@@ -49,6 +55,7 @@ class DataAPI {
 		if (endpoint === "" || endpoint === null)
 			return null;
 		endpoint = `http://localhost:3000/${endpoint}`;
+		headers = {...headers, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN')};
 		try {
 			const response = await fetch(endpoint, {
 				method: 'PUT',
@@ -62,6 +69,29 @@ class DataAPI {
 			return await response.text();
 		} catch (error) {
 			console.error(error);
+			return "";
+		}
+	}
+
+	static delete = async (endpoint, headers, body) => {
+		if (endpoint === "" || endpoint === null)
+			return null;
+		endpoint = `http://localhost:3000/${endpoint}`;
+		headers = {...headers, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN')};
+		try {
+			const response = await fetch(endpoint, {
+				method: 'DELETE',
+				credentials: 'include',
+				headers: headers,
+				body: body
+			});
+			if (!response.ok)
+				throw new Error(`Response status: ${response.status}`);
+
+			return await response.text();
+		} catch (error) {
+			console.error(error);
+			return "";
 		}
 	}
 	
