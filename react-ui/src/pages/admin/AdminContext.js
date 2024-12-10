@@ -13,10 +13,10 @@ const AdminProvider = ({children}) => {
 
 	useEffect(() => {
 		(async () => {
-			const data = await DataAPI.get("doctors", {});
-			console.log(data);
+			const data = await DataAPI.request("doctors", "GET");
+
 			if (data != null)
-				setDoctors(data);
+				setDoctors(JSON.parse(data));
 		})();
 	}, []);
 

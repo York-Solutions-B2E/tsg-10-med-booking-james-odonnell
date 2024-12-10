@@ -50,14 +50,14 @@ const EditAppointment = () => {
 		if (patientInfo.email === '')
 			navigate("/");
 		(async () => {
-			const data = await DataAPI.get("specializations");
-			if (data != null)
-				setSpecializations(data);
+			const specs = await DataAPI.request("specializations", "GET");
+			if (specs != null)
+				setSpecializations(JSON.parse(specs));
 			if (form.specialization.id != null) {
-				const data = await DataAPI.get("doctors/specialization", {
+				const docs = await DataAPI.request("doctors/specialization", "GET", {
 					specializationId: form.specialization.id
 				});
-				setDoctors(data);
+				setDoctors(JSON.parse(docs));
 			}
 		})();
 	}, [patientInfo.email, form.specialization, navigate]);
@@ -178,8 +178,8 @@ const EditAppointment = () => {
   		status: (dayjs(dateTime) !== dayjs(appointment.dateTime) ?
   			'RESCHEDULED' : 'CONFIRMED')
   	}
-  	await DataAPI.put(
-  		"appointments/update",
+  	await DataAPI.request(
+  		"appointments/update", "PUT",
   		{"content-type": "application/json"},
   		JSON.stringify(updatedAppointment));
 

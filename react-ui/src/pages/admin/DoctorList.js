@@ -33,9 +33,8 @@ const DoctorList = () => {
 	}
 
 	const handleConfirm = async () => {
-		console.log(doctor);
-    await DataAPI.delete(
-      "doctors", {
+    const response = await DataAPI.requestAsAdmin(
+      "doctors", "DELETE", {
       	"content-type": "application/json",
     		"doctorId": doctor.id
     	},

@@ -24,8 +24,8 @@ const AppointmentProvider = ({children}) => {
 			return;
 		if (patientInfo.email !== '') {
 			(async () => {
-				const data = await DataAPI.get(
-					"appointments/patients",
+				const data = await DataAPI.request(
+					"appointments/patients", "GET",
 					{patientEmail: patientInfo.email.toLowerCase()}
 				);
 				if (data === null) {
@@ -36,7 +36,7 @@ const AppointmentProvider = ({children}) => {
 					});
 					return;
 				}
-				setAppointments(data);
+				setAppointments(JSON.parse(data));
 			})();
 		}
 	}, [patientInfo, appointments, navigate]);

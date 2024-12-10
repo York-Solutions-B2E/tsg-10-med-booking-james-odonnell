@@ -78,7 +78,10 @@ const Booking = () => {
 			lastName: patient.lastName,
 			dob: patient.dob,
 		});
-		await DataAPI.post("appointments/new", {"content-type": "application/json"}, JSON.stringify(appointment));
+		await DataAPI.request(
+			"appointments/new", "POST",
+			{"content-type": "application/json"},
+			JSON.stringify(appointment));
 		navigate("/");
 	}
 

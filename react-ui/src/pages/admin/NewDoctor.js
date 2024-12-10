@@ -41,9 +41,9 @@ const NewDoctor = () => {
 			return;
 
 		(async () => {
-			const data = await DataAPI.get("specializations", {});
+			const data = await DataAPI.request("specializations", "GET");
 			if (data !== '')
-				setSpecializations(data);
+				setSpecializations(JSON.parse(data));
 		})();
 	}, [specializations]);
 
@@ -87,7 +87,10 @@ const NewDoctor = () => {
 			specialization: form.specialization.value
 		});
 
-		const response = await DataAPI.post("doctors", {"content-type": "application/json"}, JSON.stringify({
+		const response = await DataAPI.requestAsAdmin(
+				"doctors", "POST",
+				{"content-type": "application/json"},
+				JSON.stringify({
 			firstName: form.firstName.value,
 			lastName: form.lastName.value,
 			specialization: form.specialization.value

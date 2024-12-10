@@ -57,8 +57,8 @@ const AppointmentTable = () => {
   const cancel = async () => {
     cancelApt.status = 'CANCELLED';
     console.log(cancelApt);
-    const response = await DataAPI.put(
-      "appointments/update",
+    const response = await DataAPI.request(
+      "appointments/update", "PUT",
       {"content-type": "application/json"},
       JSON.stringify(cancelApt));
     if (response === '')

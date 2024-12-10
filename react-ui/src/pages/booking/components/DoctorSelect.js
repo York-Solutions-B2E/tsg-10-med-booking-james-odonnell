@@ -40,14 +40,15 @@ const DoctorSelect = () => {
 			return;
 		}
 		(async () => {
-			const data = await DataAPI.get("specializations");
-			if (data != null)
-				setSpecializations(data);
+			const specs = await DataAPI.request("specializations", "GET");
+			if (specs != null)
+				setSpecializations(JSON.parse(specs));
 			if (form.specialization.id != null) {
-				const data = await DataAPI.get("doctors/specialization", {
-					specializationId: form.specialization.id
+				const docs = await DataAPI.request(
+						"doctors/specialization", "GET", {
+						specializationId: form.specialization.id
 				});
-				setDoctors(data);
+				setDoctors(JSON.parse(docs));
 			}
 		})();
 	}, [form]);

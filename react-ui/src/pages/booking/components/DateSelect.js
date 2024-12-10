@@ -38,9 +38,10 @@ const DateSelect = () => {
 		if (form.date === null && form.visitType === null) {
 			(async () => {
 				console.log(patient.email);
-				const patientAppointments = await DataAPI.get("appointments/patients",
+				const patientAppointments = await DataAPI.request(
+						"appointments/patients", "GET",
 						{patientEmail: patient.email.toLowerCase()});
-				setPatAppts(patientAppointments);
+				setPatAppts(JSON.parse(patientAppointments));
 			})();
 			return;
 		}
