@@ -62,7 +62,11 @@ const AppointmentTable = () => {
     if (response === '')
       return;
 
-    setAppointments(appointments.filter((appt) => appt.id !== cancelApt.id));
+    setCancelApt({
+      ...cancelApt,
+      status: 'CANCELLED',
+    });
+
     setOpen(false);
   }
 

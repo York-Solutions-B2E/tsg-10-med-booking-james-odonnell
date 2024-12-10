@@ -41,8 +41,7 @@ public class AppointmentService {
 	private ArrayList<AppointmentDTO> asDTOs(List<Appointment> appointments) {
 		ArrayList<AppointmentDTO> dtos = new ArrayList<AppointmentDTO>();
 		for (Appointment appt : appointments)
-			if (appt.getStatus() != AppointmentStatus.CANCELLED)
-				dtos.add(appt.toDTO());
+			dtos.add(appt.toDTO());
 		return dtos;
 	}
 
