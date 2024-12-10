@@ -1,6 +1,6 @@
 import {Routes, Route} from 'react-router-dom';
 
-import PatientProvider, {usePatientContext} from './PatientContext';
+import PatientProvider from './PatientContext';
 import Home from './Home';
 import Booking from './booking/Booking';
 import AppointmentRouter from './appointments/AppointmentRouter';

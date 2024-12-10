@@ -1,6 +1,5 @@
 import {createContext, useContext, useState, useEffect} from 'react';
 
-import {useAppContext} from '../../App';
 import DataAPI from '../../API/DataAPI';
 
 const AdminContext = createContext();
