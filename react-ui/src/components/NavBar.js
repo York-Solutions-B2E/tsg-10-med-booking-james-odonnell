@@ -77,38 +77,9 @@ const NavBar = () => {
           	}
           </IconButton>
 
-          {user ?
-	        	<AccountCircle
-	        		sx={{width: 40, height: 40}}
-	        		onClick={(event) => setAnchorEl(event.currentTarget)}
-	        	/> :
-	        	<Button color="inherit" onClick={() => {AuthenticationAPI.login()}}>Login</Button>
-	        }
-
-					{user ?
-	        	<Menu
-	        		anchorEl={anchorEl}
-	        		onClose={() => setAnchorEl(null)}
-	        		open={open}>
-        				<MenuItem
-        					onClick={() => setAnchorEl(null)}
-        					component={Link} to="/appointments">My Appointments
-        				</MenuItem>
-        				<MenuItem
-        					onClick={() => setAnchorEl(null)}
-        					component={Link} to="/booking">Booking
-        				</MenuItem>
-        				<MenuItem
-        					onClick={() => {AuthenticationAPI.logout()}}>Logout
-      					</MenuItem>
-        			</Menu> :
-        		<Menu
-	        		anchorEl={anchorEl}
-	        		onClose={() => setAnchorEl(null)}
-	        		open={open}>
-        			<MenuItem onClick={() => {AuthenticationAPI.login()}}>Login</MenuItem>
-        		</Menu>
-        	}
+          {user ? <Button color="inherit" onClick={() => {AuthenticationAPI.logout()}}>Logout</Button>
+	        	: <Button color="inherit" onClick={() => {AuthenticationAPI.login()}}>Login</Button>}
+	        
 
         </Toolbar>
       </AppBar>
