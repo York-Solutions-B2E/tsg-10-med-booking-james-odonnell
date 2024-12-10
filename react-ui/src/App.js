@@ -7,10 +7,9 @@ import {useNavigate} from 'react-router-dom';
 import AuthenticationAPI from './API/AuthenticationAPI';
 
 import NavBar from './components/NavBar';
-import Booking from './pages/Booking';
-import AppointmentRouter from './pages/appointments/AppointmentRouter';
 import AdminRouter from './pages/admin/AdminRouter';
-import Home from './pages/Home';
+import PatientProvider from './pages/PatientContext';
+import PatientRouter from './pages/PatientRouter';
 
 const ThemeContext = createContext();
 export const useThemeContext = () => {
@@ -66,19 +65,12 @@ const App = () => {
 
         <ThemeProvider theme={theme}>
           <CssBaseline />
+
           <Routes>
-            {user !== false && admin ?
-              <Route path="/admin/*" element={<AdminRouter />} />
-            : (
-              <>
-                <Route path="/booking" element={<Booking />} />
-                {userEmail !== null ?
-                  <Route path="/myappointments" element={<AppointmentRouter />} />
-                : null}
-              </>
-            )}
-            <Route path="/*" element={<Home />} />
+            {admin && <Route path="/admin*" element={<AdminRouter />} />}
+            {!admin && <Route path="/*" element={<PatientRouter />} />}
           </Routes>
+
         </ThemeProvider>
 
       </AppContext.Provider>
