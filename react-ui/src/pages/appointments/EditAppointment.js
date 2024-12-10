@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 
 import {useAppContext} from '../../App';
 import DataAPI from '../../API/DataAPI';
+import {usePatientContext} from '../PatientContext';
 import {useAppointmentContext} from './AppointmentContext';
 import EditForm from './components/EditForm';
 import SubmissionModal from '../../components/SubmissionModal';
@@ -16,11 +17,12 @@ import SubmissionModal from '../../components/SubmissionModal';
 const EditAppointment = () => {
 
 	const {index} = useParams();
-	const {navigate, userEmail} = useAppContext();
+	const {navigate} = useAppContext();
+	const {patientInfo} = usePatientContext();
 	const {appointments, setAppointments} = useAppointmentContext();
 	const [modalOpen, setModalOpen] = useState(false);
 	const [specializations, setSpecializations] = useState([]);
-	const [appointment] = useState(appointments[index]);
+	const [appointment, setAppointment] = useState(appointments[index]);
 	const [doctors, setDoctors] = useState([]);
 	const [now] = useState(dayjs());
 	const [nineAM] = useState(now.set('hour', 9).startOf('hour'));
@@ -45,8 +47,8 @@ const EditAppointment = () => {
 	});
 
 	useEffect(() => {
-		if (userEmail === null)
-			navigate("/list");
+		if (patientInfo.email === '')
+			navigate("/");
 		(async () => {
 			const data = await DataAPI.get("specializations");
 			if (data != null)
@@ -58,7 +60,7 @@ const EditAppointment = () => {
 				setDoctors(data);
 			}
 		})();
-	}, [userEmail, form.specialization, navigate]);
+	}, [patientInfo.email, form.specialization, navigate]);
 
 	useEffect(() => {
 		if (dayjs().isBefore(nineAM) || (form.date != null && dayjs().isBefore(form.date))) {
