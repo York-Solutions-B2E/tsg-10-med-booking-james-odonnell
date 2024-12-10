@@ -22,7 +22,7 @@ const AppointmentProvider = ({children}) => {
 	useEffect(() => {
 		if (appointments !== null)
 			return;
-		if (patientInfo !== null) {
+		if (patientInfo.email !== '') {
 			(async () => {
 				const data = await DataAPI.get(
 					"appointments/patients",
@@ -30,9 +30,9 @@ const AppointmentProvider = ({children}) => {
 				);
 				if (data === null) {
 					setModalOpen(true);
-					patientInfo({
+					setPatientInfo({
 						...patientInfo,
-						email: null,
+						email: '',
 					});
 					return;
 				}
