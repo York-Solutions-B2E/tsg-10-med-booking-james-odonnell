@@ -36,10 +36,17 @@ const DoctorList = () => {
 		console.log(doctor);
     const response = await DataAPI.delete(
       "doctors",
-      {"content-type": "application/json"},
+      {"content-type": "application/json",
+    		"doctorId": doctor.id},
       JSON.stringify(doctor));
 
-    setDoctors(doctors.filter((doc) => doc.id !== doctor.id));
+    doctor.status = 'INACTIVE';
+    setDoctor({
+    	...doctor,
+    	status: 'INACTIVE',
+    });
+    doctors.push(doctor);
+    setDoctors(doctors.filter((doc) => doc.id !== doctor.id || doc.status === 'INACTIVE'));
     setModalOpen(false);
 	}
 

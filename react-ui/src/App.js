@@ -67,7 +67,7 @@ const App = () => {
           <CssBaseline />
 
           <Routes>
-            {admin && <Route path="/admin*" element={<AdminRouter />} />}
+            {admin && <Route path="/admin/*" element={<AdminRouter />} />}
             {!admin && <Route path="/*" element={<PatientRouter />} />}
           </Routes>
 

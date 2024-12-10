@@ -136,16 +136,14 @@ const EditDoctor = () => {
 			/>
 			<Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'space-between', mt: 4}}>
 				<Button
+					onClick={() => navigate("/admin/doctors")}
 					variant="contained">
 					cancel
 				</Button>
 				<Button
 					variant="contained"
 					disabled={!valid}
-					onClick={(e) => {
-						console.log(e);
-						setModalOpen(true);
-					}} >
+					onClick={(e) => setModalOpen(true)} >
 					submit
 				</Button>
 			</Box>

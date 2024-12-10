@@ -8,11 +8,12 @@ const DoctorTable = ({doctors, handleDelete}) => {
 
 	const {navigate} = useAppContext();
 
-	const paginationModel = {page: 0, pageSize: 10};
+	const paginationModel = {page: 0, pageSize: 25};
   const columns = [
     {field: 'id', headerName: 'ID', minWidth: 100},
     {field: 'doctor', headerName: 'Doctor', minWidth: 150},
     {field: 'specialization', headerName: 'Specialization', minWidth: 150},
+    {field: 'status', headerName: 'Status', minWidth: 120},
     {
       field: 'actions',
       headerName: 'Actions',
@@ -50,6 +51,7 @@ const DoctorTable = ({doctors, handleDelete}) => {
         		id: doctor.id,
         		doctor: `${doctor.firstName} ${doctor.lastName}`,
         		specialization: doctor.specialization.name,
+            status: doctor.status,
         	}
         })}
 			/>
