@@ -21,9 +21,10 @@ const DoctorTable = ({doctors, handleDelete}) => {
       minWidth: 240,
       flexGrow: 1,
       renderCell: ((params) => (
+        params.row.status === 'INACTIVE' ? null :
       	<>
       		<Button
-      			onClick={() => console.log(params)}>
+      			onClick={() => navigate(`/admin/doctors/${params.row.index}`)}>
       			view
       		</Button>
       		<Button
@@ -31,6 +32,7 @@ const DoctorTable = ({doctors, handleDelete}) => {
       			edit
       		</Button>
       		<Button
+            color="error"
       			onClick={() => handleDelete(params.row.index)}>
       			delete
       		</Button>

@@ -42,6 +42,7 @@ const AppointmentTable = () => {
             Edit
           </Button>
           <Button
+            color="error"
             onClick={() => {
               setCancelApt(params.value);
               setOpen(true);
