@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 import {useAppointmentContext} from './AppointmentContext';
 import AppointmentTable from './components/AppointmentTable';
 import {useAppContext} from '../../App';
-import DataAPI from '../../API/DataAPI';
 import Modal from '../../components/Modal';
 import {validateEmail} from '../../util/Validate';
 
@@ -22,11 +21,11 @@ const MyAppointments = () => {
 			return;
 		if (userEmail === null)
 			setModalOpen(true);
-	}, [userEmail, modalOpen, appointments]);
+ 	}, [userEmail, appointments]);
 
 	return (
 		<Container sx={{display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
-			{appointments === null ? null : <AppointmentTable />}
+			{appointments && <AppointmentTable />}
 			<Modal
 				open={modalOpen}
 				setOpen={setModalOpen}
@@ -51,8 +50,8 @@ const MyAppointments = () => {
 						title: "submit",
 						disabled: modalInput.error || modalInput.email == null,
 						action: (async () => {
-							setUserEmail(modalInput.email);
 							setModalOpen(false);
+							setUserEmail(modalInput.email);
 					}
 				)}]} />
 		</Container>
