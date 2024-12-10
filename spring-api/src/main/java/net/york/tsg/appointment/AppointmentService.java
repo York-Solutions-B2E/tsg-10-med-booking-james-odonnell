@@ -30,9 +30,9 @@ public class AppointmentService {
 
 	@Autowired
 	public AppointmentService(
-		AppointmentRepository appointmentRepository,
-		DoctorRepository doctorRepository,
-		PatientRepository patientRepository) {
+			AppointmentRepository appointmentRepository,
+			DoctorRepository doctorRepository,
+			PatientRepository patientRepository) {
 		this.appointmentRepository = appointmentRepository;
 		this.doctorRepository = doctorRepository;
 		this.patientRepository = patientRepository;
@@ -145,6 +145,14 @@ public class AppointmentService {
 		optionalAppointment.get().setStatus(AppointmentStatus.CANCELLED);
 
 		return new ResponseEntity<>(optionalAppointment.get().toDTO(), HttpStatus.OK);
+	}
+
+	public void cancelAllByDoctorId(Long doctorId) {
+		List<Appointment> appointments = appointmentRepository.findAllByDoctorId(doctorId);
+		for (Appointment appointment : appointments) {
+			appointment.setStatus(AppointmentStatus.CANCELLED);
+			appointmentRepository.save(appointment);
+		}
 	}
 
 	@Transactional

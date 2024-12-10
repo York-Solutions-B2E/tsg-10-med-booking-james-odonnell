@@ -42,6 +42,8 @@ public class Doctor {
     @NotBlank
     private String lastName;
 
+    private DoctorStatus status = DoctorStatus.ACTIVE;
+
     @NotNull
     @ManyToOne
     @JoinColumn(

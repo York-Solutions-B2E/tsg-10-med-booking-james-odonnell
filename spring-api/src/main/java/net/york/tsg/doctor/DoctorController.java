@@ -47,8 +47,8 @@ public class DoctorController {
 
 	@PreAuthorize("hasAuthority('Admin')")
 	@DeleteMapping
-	public ResponseEntity<?> removeDoctor(@RequestBody Doctor doctor) {
-		return doctorService.removeDoctor(doctor);
+	public ResponseEntity<?> removeDoctor(@RequestHeader("doctorId") Long doctorId) {
+		return doctorService.removeDoctor(doctorId);
 	}
 
 	@PreAuthorize("hasAuthority('Admin')")

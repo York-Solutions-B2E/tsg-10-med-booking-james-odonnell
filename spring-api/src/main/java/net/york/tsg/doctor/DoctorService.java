@@ -3,6 +3,8 @@ package net.york.tsg.doctor;
 import net.york.tsg.specialization.Specialization;
 import net.york.tsg.specialization.SpecializationService;
 
+import net.york.tsg.appointment.AppointmentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +20,16 @@ public class DoctorService {
 
 	private final DoctorRepository doctorRepository;
 	private final SpecializationService specializationService;
+	private final AppointmentService appointmentService;
 
 	@Autowired
-	public DoctorService(DoctorRepository doctorRepository, SpecializationService specializationService) {
+	public DoctorService(
+			DoctorRepository doctorRepository,
+			SpecializationService specializationService,
+			AppointmentService appointmentService) {
 		this.doctorRepository = doctorRepository;
 		this.specializationService = specializationService;
+		this.appointmentService = appointmentService;
 	}
 
 	public ResponseEntity<?> getAllDoctors() {
@@ -44,11 +51,6 @@ public class DoctorService {
 
 	public ResponseEntity<?> getAllDoctorsBySpecialization(Long specializationId) {
 		List<Doctor> doctors = doctorRepository.findAllBySpecialization(specializationId);
-		if (doctors.size() <= 0)
-			return new ResponseEntity<>(
-				"Error: specializationId: " + specializationId + " not found.",
-				HttpStatus.NOT_FOUND
-			);
 		return ResponseEntity.ok().body(doctors);
 	}
 
@@ -57,16 +59,19 @@ public class DoctorService {
 		return new ResponseEntity<>(doctor, HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> removeDoctor(Doctor doctor) {
-		if (doctor.getId() == null)
+	public ResponseEntity<?> removeDoctor(Long doctorId) {
+		if (doctorId == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		if (doctorRepository.findById(doctor.getId()).isEmpty())
+		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
+		if (optionalDoctor.isEmpty())
 			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctor.getId() + " not found.",
+				"Error: doctor_id: " + doctorId + " not found.",
 				HttpStatus.NOT_FOUND
 			);
 
-		doctorRepository.deleteById(doctor.getId());
+		appointmentService.cancelAllByDoctorId(doctorId);
+		optionalDoctor.get().setStatus(DoctorStatus.INACTIVE);
+		doctorRepository.save(optionalDoctor.get());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
