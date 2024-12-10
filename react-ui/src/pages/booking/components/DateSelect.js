@@ -14,8 +14,8 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
 import {DigitalClock} from '@mui/x-date-pickers/DigitalClock';
 
-import DataAPI from '../API/DataAPI';
-import {useBookingContext} from '../pages/Booking';
+import DataAPI from '../../../API/DataAPI';
+import {useBookingContext} from '../Booking';
 
 const DateSelect = () => {
 

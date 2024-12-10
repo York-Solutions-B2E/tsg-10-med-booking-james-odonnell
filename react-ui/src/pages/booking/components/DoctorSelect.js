@@ -7,8 +7,8 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
-import DataAPI from '../API/DataAPI';
-import {useBookingContext} from '../pages/Booking';
+import DataAPI from '../../../API/DataAPI';
+import {useBookingContext} from '../Booking';
 
 const DoctorSelect = () => {
 

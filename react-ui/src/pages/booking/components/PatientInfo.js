@@ -10,8 +10,8 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 
-import {useBookingContext} from '../pages/Booking';
-import {validateName, validateEmail} from '../util/Validate';
+import {useBookingContext} from '../Booking';
+import {validateName, validateEmail} from '../../../util/Validate';
 
 const PatientInfo = () => {
 

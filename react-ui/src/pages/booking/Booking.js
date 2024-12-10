@@ -8,13 +8,13 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 
-import PatientInfo from '../components/PatientInfo';
-import DoctorSelect from '../components/DoctorSelect';
-import DateSelect from '../components/DateSelect';
-import SubmissionModal from '../components/SubmissionModal';
+import PatientInfo from './components/PatientInfo';
+import DoctorSelect from './components/DoctorSelect';
+import DateSelect from './components/DateSelect';
+import SubmissionModal from '../../components/SubmissionModal';
 
-import {useAppContext} from '../App';
-import DataAPI from '../API/DataAPI';
+import {useAppContext} from '../../App';
+import DataAPI from '../../API/DataAPI';
 
 const BookingContext = createContext();
 export const useBookingContext = () => {
