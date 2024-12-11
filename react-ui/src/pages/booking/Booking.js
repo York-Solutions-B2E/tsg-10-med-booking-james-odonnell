@@ -1,5 +1,7 @@
 import {useState, useEffect} from 'react';
 
+import dayjs from 'dayjs';
+
 import Container from '@mui/material/Container';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -58,6 +60,16 @@ const Booking = () => {
 		valid: false,
 	});
 
+	//deselect date/time when user changes doctor
+	useEffect(() => {
+		setDateForm({
+			date: null,
+			time: null,
+			visitType: null,
+			valid: false,
+		})
+	}, [doctorForm]);
+
 	const handlePrevious = () => {
 		setActiveStep(activeStep - 1);
 	}
@@ -66,12 +78,26 @@ const Booking = () => {
 		setActiveStep(activeStep + 1);
 	}
 
+	const handleSubmit = () => {
+	}
+
 	const forms = [patientForm, doctorForm, dateForm];
 	const stepNames = ["Patient Information", "Choose a doctor", "Select a date"];
 	const steps = [
-		<PatientInfo form={patientForm} setForm={setPatientForm} />,
-		<DoctorSelect form={doctorForm} setForm={setDoctorForm} />,
-		<DateSelect form={dateForm} setForm={setDateForm} />,
+		<PatientInfo
+			form={patientForm}
+			setForm={setPatientForm}
+		/>,
+		<DoctorSelect
+			form={doctorForm}
+			setForm={setDoctorForm}
+		/>,
+		<DateSelect
+			form={dateForm}
+			setForm={setDateForm}
+			patientEmail={patientForm.email.value}
+			doctorId={doctorForm.doctor.id}
+		/>,
 	];
 
 	return (
@@ -100,7 +126,8 @@ const Booking = () => {
 				<Button
 					variant="contained"
 					disabled={!forms[activeStep].valid}
-					onClick={handleNext} >
+					onClick={stepNames[activeStep] === "Select a date" ?
+						handleSubmit : handleNext} >
 					{stepNames[activeStep] === "Select a date" ?
 						"submit" : "next step"}
 				</Button>
