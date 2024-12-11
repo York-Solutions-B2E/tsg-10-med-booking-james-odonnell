@@ -70,8 +70,8 @@ const Booking = () => {
 	const stepNames = ["Patient Information", "Choose a doctor", "Select a date"];
 	const steps = [
 		<PatientInfo form={patientForm} setForm={setPatientForm} />,
-		<DoctorSelect form={doctorForm} />,
-		<DateSelect form={dateForm} />,
+		<DoctorSelect form={doctorForm} setForm={setDoctorForm} />,
+		<DateSelect form={dateForm} setForm={setDateForm} />,
 	];
 
 	return (

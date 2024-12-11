@@ -8,37 +8,13 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 import DataAPI from '../../../API/DataAPI';
-import {useBookingContext} from '../Booking';
 
-const DoctorSelect = () => {
+const DoctorSelect = ({form, setForm}) => {
 
-	const {doctor, handleNext, handlePrevious} = useBookingContext();
 	const [specializations, setSpecializations] = useState([]);
 	const [doctors, setDoctors] = useState([]);
-	const [valid, setValid] = useState(false);
-	const [form, setForm] = useState({
-		specialization: {
-			id: doctor.specialization.id,
-			name: doctor.specialization.name,
-		},
-		doctor: {
-			id: doctor.id,
-			firstName: doctor.firstName,
-			lastName: doctor.lastName
-		},
-		fullName: doctor.firstName + " " + doctor.lastName
-	});
 
 	useEffect(() => {
-		if (form.specialization.id != null && form.doctor.id != null)
-			setValid(true);
-		if (form.fullName === " ") {
-			setForm({
-				...form,
-				fullName: ''
-			});
-			return;
-		}
 		(async () => {
 			const specs = await DataAPI.request("specializations", "GET");
 			if (specs != null)
@@ -53,51 +29,38 @@ const DoctorSelect = () => {
 		})();
 	}, [form]);
 
-	const handleChange = (e, value, name) => {
-		let field;
-		const {id} = e.target;
-		const fieldIndex = parseInt(id.charAt(id.length - 1));
-		if (isNaN(fieldIndex)) {
-			setValid(false);
-			setForm({
-				...form,
-				doctor: {
-					id: null,
-					firstName: '',
-					lastName: ''
-				},
-				fullName: ''
-			});
-			if (name === "specialization") {
-				setForm({
-					specialization: {
-						id: null,
-						name: ''
-					},
-					doctor: {
-						id: null,
-						firstName: '',
-						lastName: ''
-					},
-					fullName: ''
-				});
-			}
+	const handleChange = (id, value, field) => {
+		if (field !== "specialization" && field !== "doctor") {
+			console.log("Error: not a valid object field");
 			return;
 		}
-		if (name === "specialization") {
-			field = {...specializations[fieldIndex]}
-		} else if (name === "doctor") {
-			field = {...doctors[fieldIndex]}
-			setValid(true);
-		}
 
+		const fieldIndex = parseInt(id.charAt(id.length - 1));
+		let valid = value !== null;
+		let obj;
+		if (id !== "" && !isNaN(fieldIndex)) {
+			if (field === "specialization") {
+				obj = {...specializations[fieldIndex]};
+			} else if (field === "doctor") {
+				obj = {...doctors[fieldIndex]};
+			}
+		} else {
+			obj = null;
+		}
 		setForm({
-			...form,
-			[name]:{
-				...form[name],
-				...field
-			},
-			fullName: (name === "doctor" ? value : '')
+			doctor: (field === "doctor" && obj != null ? obj : {
+				id: null,
+				firstName: '',
+				lastName: '',
+			}),
+			specialization: (field === "specialization" ? (obj !== null ?
+				obj : {
+					id: null,
+					name: '',
+				}
+			) : form.specialization),
+			fullName: (field === "doctor" ? value : ''),
+			valid: (valid && field === "doctor" ? true : false),
 		});
 	}
 
@@ -111,7 +74,7 @@ const DoctorSelect = () => {
 							value={form.specialization.name}
 							options={specializations.map((spec) => spec.name)}
 							sx={{width: '50%'}}
-							onChange={(e, newValue) => handleChange(e, newValue, "specialization")}
+							onChange={(e, newValue) => handleChange(e.target.id, newValue, "specialization")}
 							renderInput={(params) => <TextField {...params} label="Specialization"/>}
 						/>
 					</Grid>
@@ -122,42 +85,13 @@ const DoctorSelect = () => {
 							disabled={form.specialization.name === ''}
 							options={doctors.map((doctor) => doctor.firstName + " " + doctor.lastName)}
 							sx={{width: '50%'}}
-							onChange={(e, newValue) => handleChange(e, newValue, "doctor")}
+							onChange={(e, newValue) => handleChange(e.target.id, newValue, "doctor")}
 							renderInput={(params) => <TextField {...params} label="Doctor"/>}
 						/>
 					</Grid>
 				</Grid>
 				
 			</Paper>
-			<Box sx={{mt: 4, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
-				<Button
-					variant="contained"
-					onClick={() => {
-						console.log(form);
-						doctor.id = form.doctor.id;
-						doctor.firstName = form.doctor.firstName;
-						doctor.lastName = form.doctor.lastName;
-						doctor.specialization.id = form.specialization.id;
-						doctor.specialization.name = form.specialization.name;
-						handlePrevious();
-					}}>
-					Previous
-				</Button>
-				<Button
-					variant="contained"
-					disabled={!valid}
-					onClick={() => {
-						console.log(form);
-						doctor.id = form.doctor.id;
-						doctor.firstName = form.doctor.firstName;
-						doctor.lastName = form.doctor.lastName;
-						doctor.specialization.id = form.specialization.id;
-						doctor.specialization.name = form.specialization.name;
-						handleNext();
-					}}>
-					Next Step
-				</Button>
-			</Box>
 		</>
 	);
 
