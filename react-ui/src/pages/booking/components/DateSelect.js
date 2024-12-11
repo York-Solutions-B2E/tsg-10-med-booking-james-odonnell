@@ -65,8 +65,9 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 	const handleChange = (value, field) => {
 		console.log(value, field);
 		form = {
-			...form,
-			[field]: value,
+			date: field === "date" ? value : form.date,
+			time: field === "time" ? value : (field === "date" ? null : form.time),
+			visitType: field === "visitType" ? value : form.visitType,
 		}
 		form.valid =
 			form.date !== null &&
