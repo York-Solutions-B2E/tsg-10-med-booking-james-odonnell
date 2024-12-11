@@ -11,17 +11,20 @@ import Modal from '../../../components/Modal';
 import DataAPI from '../../../API/DataAPI';
 import {useAppContext} from '../../../App';
 import {useAppointmentContext} from '../AppointmentContext';
+import {usePatientContext} from '../../PatientContext';
 
 const AppointmentTable = () => {
 
   const {navigate} = useAppContext();
   const {appointments} = useAppointmentContext();
+  const {patientInfo} = usePatientContext();
   const [open, setOpen] = useState(false);
   const [cancelApt, setCancelApt] = useState(null);
 
   const paginationModel = {page: 0, pageSize: 10};
   const columns = [
     {field: 'id', headerName: 'ID', minWidth: 100},
+    {field: 'patient', headerName: 'Patient', minWidth: 150},
     {field: 'doctor', headerName: 'Doctor', minWidth: 150},
     {field: 'date', headerName: 'Date', minWidth: 100},
     {field: 'time', headerName: 'Time', minWidth: 100},
@@ -80,6 +83,7 @@ const AppointmentTable = () => {
           return {
             index: index,
             id: appointment.id,
+            patient: `${patientInfo.firstName} ${patientInfo.lastName}`,
             doctor: `${appointment.doctor.firstName} ${appointment.doctor.lastName}`,
             date: dayjs(appointment.dateTime).format("MM/DD"),
             time: dayjs(appointment.dateTime).format("hh:mm A"),
