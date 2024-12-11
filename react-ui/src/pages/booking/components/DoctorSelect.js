@@ -1,9 +1,6 @@
 import {useState, useEffect} from 'react';
 
 import Paper from '@mui/material/Paper';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
 
 import DataAPI from '../../../API/DataAPI';
 import DoctorSelectForm from '../../../components/DoctorSelectForm';
@@ -28,7 +25,7 @@ const DoctorSelect = ({form, setForm}) => {
 		})();
 	}, [form]);
 
-	const handleChange = (id, value, field) => {
+	const handleChange = (value, field, id) => {
 		if (field !== "specialization" && field !== "doctor") {
 			console.log("Error: not a valid object field");
 			return;
@@ -52,8 +49,7 @@ const DoctorSelect = ({form, setForm}) => {
 				firstName: '',
 				lastName: '',
 			}),
-			specialization: (field === "specialization" ? (obj !== null ?
-				obj : {
+			specialization: (field === "specialization" ? (obj !== null ? obj : {
 					id: null,
 					name: '',
 				}
@@ -64,18 +60,14 @@ const DoctorSelect = ({form, setForm}) => {
 	}
 
 	return (
-		<>
-			<Paper elevation={5} sx={{width: '100%', padding: 4}}>
-
-				<DoctorSelectForm
-					form={form}
-					specializations={specializations}
-					doctors={doctors}
-					handleChange={handleChange}
-				/>
-				
-			</Paper>
-		</>
+		<Paper elevation={5} sx={{width: '100%', padding: 4}}>
+			<DoctorSelectForm
+				form={form}
+				specializations={specializations}
+				doctors={doctors}
+				handleChange={handleChange}
+			/>
+		</Paper>
 	);
 
 }
