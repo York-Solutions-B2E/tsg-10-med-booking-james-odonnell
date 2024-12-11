@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {useParams} from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -11,29 +12,32 @@ import {validateName} from '../../util/Validate';
 import Modal from '../../components/Modal';
 import DoctorForm from './components/DoctorForm';
 
-const NewDoctor = () => {
+const ManageDoctor = () => {
 
+	const {index} = useParams();
 	const {navigate} = useAppContext();
 	const {doctors, setDoctors} = useAdminContext();
+	const [doctor] = useState(index !== undefined ? (doctors[index]) : null);
 	const [specializations, setSpecializations] = useState(null);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [valid, setValid] = useState(false);
 	const [form, setForm] = useState({
 		firstName: {
-			value: '',
+			value: doctor !== null ? doctor.firstName : '',
 			error: false
 		},
 		lastName: {
-			value: '',
+			value: doctor !== null ? doctor.lastName : '',
 			error: false
 		},
 		specialization: {
 			value: {
-				id: null,
-				name: ''
+				id: doctor !== null ? doctor.specialization.id : null,
+				name: doctor !== null ? doctor.specialization.name : '',
 			},
 			error: false
-		}
+		},
+		valid: doctor !== null,
 	});
 
 	useEffect(() => {
@@ -47,56 +51,72 @@ const NewDoctor = () => {
 		})();
 	}, [specializations]);
 
-	useEffect(() => {
-		setValid(
-			form.firstName.value !== '' &&
-			form.lastName.value !== '' &&
-			form.specialization.value.name !== '' &&
-			form.specialization.value.id !== null &&
-			!form.firstName.error &&
-			!form.lastName.error &&
-			!form.specialization.error
-		);
-	}, [form]);
-
-	const handleChange = (value, field) => {
+	const handleChange = (value, field, id) => {
+		let obj = value;
 		if (field === "specialization") {
-			const specIndex = parseInt(value.charAt(value.length - 1));
-			setForm({
-				...form,
-				[field]: {
-					"value": specializations[specIndex],
-					error: isNaN(specIndex) || specIndex < 0 || specIndex >= specializations.length
+			if (id !== undefined) {
+				const specIndex = parseInt(id.charAt(id.length - 1));
+				if (!isNaN(specIndex) && specIndex >= 0 && specIndex < specializations.length) {
+					obj = specializations[specIndex];
+				} else {
+					obj = {
+						id: null,
+						name: '',
+					}
 				}
-			})
-			return;
+			} else {
+				obj = {
+					id: null,
+					name: '',
+				}
+			}
 		}
-		setForm({
+
+		const tempForm = {
 			...form,
 			[field]: {
-				"value": value,
+				value: obj,
 				error: value === null || !validateName(value)
 			}
+		}
+
+		setForm({
+			...tempForm,
+			valid:
+				tempForm.firstName.value !== '' &&
+				tempForm.lastName.value !== '' &&
+				tempForm.specialization.value.id !== null &&
+				!tempForm.firstName.error &&
+				!tempForm.lastName.error &&
+				!tempForm.specialization.error,
 		});
 	}
 
 	const handleSubmit = async () => {
-		console.log({
+
+		let doc = {
 			firstName: form.firstName.value,
 			lastName: form.lastName.value,
 			specialization: form.specialization.value
-		});
+		}
+		let method = "POST";
+		if (index !== undefined) {
+			method = "PUT";
+			doc.id = doctor.id;
+		}
 
 		const response = await DataAPI.requestAsAdmin(
-				"doctors", "POST",
-				{"content-type": "application/json"},
-				JSON.stringify({
-			firstName: form.firstName.value,
-			lastName: form.lastName.value,
-			specialization: form.specialization.value
-		}));
-		const doctor = await JSON.parse(response);
-		doctors.push(doctor);
+				"doctors", method,
+				{"content-type": "application/json"}, 
+				JSON.stringify(doc)
+		);
+		const updatedDoctor = await JSON.parse(response);
+
+		if (index !== undefined)
+			doctors[index] = updatedDoctor;
+		else
+			doctors.push(updatedDoctor);
+
 		setDoctors(doctors);
 		setModalOpen(false);
 		navigate("/admin/doctors");
@@ -114,7 +134,7 @@ const NewDoctor = () => {
 			<Modal
 				open={modalOpen}
 				setOpen={setModalOpen}
-				title="Add new doctor"
+				title="Update doctor"
 				content={[{
 					content:
 						<p>
@@ -129,22 +149,20 @@ const NewDoctor = () => {
 					action: (() => setModalOpen(false))
 				}, {
 					title: "submit",
-					disabled: !valid,
+					disabled: !form.valid,
 					action: handleSubmit
 				}]}
 			/>
 			<Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'space-between', mt: 4}}>
 				<Button
+					onClick={() => navigate("/admin/doctors")}
 					variant="contained">
 					cancel
 				</Button>
 				<Button
 					variant="contained"
-					disabled={!valid}
-					onClick={(e) => {
-						console.log(e);
-						setModalOpen(true);
-					}} >
+					disabled={!form.valid}
+					onClick={(e) => setModalOpen(true)} >
 					submit
 				</Button>
 			</Box>
@@ -153,4 +171,4 @@ const NewDoctor = () => {
 
 }
 
-export default NewDoctor;
+export default ManageDoctor;

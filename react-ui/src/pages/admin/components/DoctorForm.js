@@ -3,9 +3,9 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-const DoctorForm = ({handleChange, form, specializations}) => {
+const DoctorForm = ({form, handleChange, specializations}) => {
 
-	if (specializations === null)
+	if (form === null || specializations === null)
 		return;
 
 	return (
@@ -37,7 +37,7 @@ const DoctorForm = ({handleChange, form, specializations}) => {
 						sx={{width: '100%'}}
 						value={form.specialization.value.name}
 						options={specializations.map((spec) => spec.name)}
-						onChange={(e, newValue) => {handleChange(e.target.id, "specialization")}}
+						onChange={(e, newValue) => {handleChange(newValue, "specialization", e.target.id)}}
 						renderInput={(params) =>
 							<TextField {...params}
 								required
