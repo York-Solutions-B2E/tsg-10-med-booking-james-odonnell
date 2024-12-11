@@ -14,6 +14,7 @@ import {DigitalClock} from '@mui/x-date-pickers/DigitalClock';
 
 import DataAPI from '../../../API/DataAPI';
 import {dateConfilcts, timeConfilcts} from '../../../util/Validate';
+import DateTimeForm from '../../../components/DateTimeForm';
 
 const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 
@@ -27,14 +28,13 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 	const [fourPM] = useState(now.set('hour', 16).startOf('hour'));
 
 	useEffect(() => {
-		console.log(form);
 
 		if (patientAppointments === null) {
 			(async () => {
 				const data = await DataAPI.request(
-						"appointments/patients", "GET",
-						{patientEmail: patientEmail.toLowerCase()});
-				// console.log(data);
+					"appointments/patients", "GET",
+					{patientEmail: patientEmail.toLowerCase()}
+				);
 				if (data !== null)
 					setPatientAppointments(JSON.parse(data));
 				else
@@ -45,9 +45,9 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 		if (doctorAppointments === null) {
 			(async () => {
 				const data = await DataAPI.request(
-						"appointments/doctors", "GET",
-						{doctorId: doctorId});
-				console.log(data);
+					"appointments/doctors", "GET",
+					{doctorId: doctorId}
+				);
 				if (data !== null)
 					setDoctorAppointments(JSON.parse(data));
 				else
@@ -55,7 +55,10 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 			})();
 		}
 
-		if (dayjs().isBefore(nineAM) || (form.date != null && dayjs().isBefore(form.date))) {
+	}, [patientEmail, form, patientAppointments, doctorAppointments, doctorId]);
+
+	useEffect(() => {
+		if (now.isBefore(nineAM) || (form.date != null && dayjs().isBefore(form.date))) {
 			setMinTime(nineAM);
 		} else {
 			let time = now.add(1, 'hour').hour();
@@ -67,7 +70,7 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 				setMinTime(time);
 			}
 		}
-	}, [form.date, fourPM, nineAM, now, patientEmail, form, patientAppointments]);
+	}, [now, form.date, fourPM, nineAM]);
 
 	const handleChange = (value, field) => {
 		console.log(value, field);
@@ -83,61 +86,18 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 	}
 
 	return (
-		<>
-			<Paper elevation={5}>
-				<Grid container sx={{display: 'flex', justifyContent: 'center', alignContent: 'center', p: 4}}>
-					<LocalizationProvider dateAdapter={AdapterDayjs}>
-						<Grid item md={4}>
-							<DateCalendar
-								required
-								disablePast
-								shouldDisableDate={(date) => dateConfilcts(date, patientAppointments, doctorId)}
-								minDate={minDate}
-								value={form.date}
-								onChange={(value) => handleChange(value, "date")}
-							/>
-						</Grid>
-						<Grid item md={2} sx={{ml: 4}}>
-							<Stack>
-								<DigitalClock
-									disabled={form.date == null}
-									skipDisabled
-									shouldDisableTime={form.date !== null ?
-										(time) => timeConfilcts(
-											time,
-											form.date.format("YYYY-MM-DD"),
-											patientAppointments,
-											doctorAppointments)
-										: null}
-									minTime={minTime}
-									maxTime={fourPM}
-									value={form.time}
-									onChange={(value) => handleChange(value, "time")}
-								/>
-								<RadioGroup sx={{width: '10%', mt: 4}}>
-									<FormControlLabel
-										label="In person"
-										control={<Radio
-											onChange={(e) => handleChange(e.target.value, "visitType")}
-										/>}
-										value="IN_PERSON"
-										checked={form.visitType !== null && form.visitType === "IN_PERSON"}
-									/>
-									<FormControlLabel
-										label="Telehealth"
-										control={<Radio
-											onChange={(e) => handleChange(e.target.value, "visitType")}
-										/>}
-										value="TELEHEALTH"
-										checked={form.visitType !== null && form.visitType === "TELEHEALTH"}
-									/>
-								</RadioGroup>
-							</Stack>
-						</Grid>
-					</LocalizationProvider>
-				</Grid>
-			</Paper>
-		</>
+		<Paper elevation={5}>
+			<DateTimeForm
+				form={form}
+				patientAppointments={patientAppointments}
+				doctorId={doctorId}
+				doctorAppointments={doctorAppointments}
+				minDate={minDate}
+				minTime={minTime}
+				maxTime={fourPM}
+				handleChange={handleChange}
+			/>
+		</Paper>
 	);
 }
 
