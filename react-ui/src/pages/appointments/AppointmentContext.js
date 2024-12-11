@@ -1,5 +1,6 @@
 import {createContext, useContext, useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+
+import Button from '@mui/material/Button';
 
 import {useAppContext} from '../../App';
 import {usePatientContext} from '../PatientContext';
@@ -52,18 +53,18 @@ const AppointmentProvider = ({children}) => {
 
 	return (
 		<AppointmentContext.Provider value={{appointments, setAppointments}}>
-			{children}
+			{!modalOpen && children}
 			<Modal
 				open={modalOpen}
 				setOpen={setModalOpen}
 				title="No appointments found."
 				content={[{
 					content:
-						<Link
+						<Button
 							onClick={() => setModalOpen(false)}
 							to="/booking">
 							Click here to book an appointment.
-						</Link>,
+						</Button>,
 				}]}
 				actions={[{
 					title: "cancel",
