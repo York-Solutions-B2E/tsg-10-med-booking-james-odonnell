@@ -1,19 +1,9 @@
 import {useState, useEffect} from 'react';
 
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import RadioGroup from '@mui/material/RadioGroup';
-import Radio from '@mui/material/Radio';
 import dayjs from 'dayjs';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
-import {DigitalClock} from '@mui/x-date-pickers/DigitalClock';
 
 import DataAPI from '../../../API/DataAPI';
-import {dateConfilcts, timeConfilcts} from '../../../util/Validate';
 import DateTimeForm from '../../../components/DateTimeForm';
 
 const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
