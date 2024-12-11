@@ -1,10 +1,8 @@
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
-import dayjs from 'dayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
@@ -12,7 +10,10 @@ import {DigitalClock} from '@mui/x-date-pickers/DigitalClock';
 
 import {dateConfilcts, timeConfilcts} from '../util/Validate';
 
-const DateTimeForm = ({form, patientAppointments, doctorId, doctorAppointments, minDate, minTime, maxTime, handleChange}) => {
+const DateTimeForm = ({form, patientAppointments, doctorId, doctorAppointments, minDate, minTime, maxTime, handleChange, filterDates}) => {
+
+	if (form === null || patientAppointments === null || doctorAppointments === null)
+		return;
 
 	return (
 		<Grid container sx={{display: 'flex', justifyContent: 'center', alignContent: 'center', p: 4}}>
@@ -21,7 +22,10 @@ const DateTimeForm = ({form, patientAppointments, doctorId, doctorAppointments, 
 					<DateCalendar
 						required
 						disablePast
-						shouldDisableDate={(date) => dateConfilcts(date, patientAppointments, doctorId)}
+						disabled={doctorId === null}
+						shouldDisableDate={filterDates ?
+							(date) => filterDates(date) :
+							(date) => dateConfilcts(date, patientAppointments, doctorId)}
 						minDate={minDate}
 						value={form.date}
 						onChange={(value) => handleChange(value, "date")}
