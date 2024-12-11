@@ -13,8 +13,8 @@ import DataAPI from '../../API/DataAPI';
 import {useAppContext} from '../../App';
 import {usePatientContext} from '../PatientContext';
 import PatientInfo from './components/PatientInfo';
-import DoctorSelect from './components/DoctorSelect';
-import DateSelect from './components/DateSelect';
+import DoctorSelect from './DoctorSelect';
+import DateSelect from './DateSelect';
 import SubmissionModal from '../../components/SubmissionModal';
 
 const Booking = () => {

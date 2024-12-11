@@ -3,8 +3,8 @@ import {useState, useEffect} from 'react';
 import Paper from '@mui/material/Paper';
 import dayjs from 'dayjs';
 
-import DataAPI from '../../../API/DataAPI';
-import DateTimeForm from '../../../components/DateTimeForm';
+import DataAPI from '../../API/DataAPI';
+import DateTimeForm from '../../components/DateTimeForm';
 
 const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 

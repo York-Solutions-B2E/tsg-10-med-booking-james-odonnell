@@ -2,8 +2,8 @@ import {useState, useEffect} from 'react';
 
 import Paper from '@mui/material/Paper';
 
-import DataAPI from '../../../API/DataAPI';
-import DoctorSelectForm from '../../../components/DoctorSelectForm';
+import DataAPI from '../../API/DataAPI';
+import DoctorSelectForm from '../../components/DoctorSelectForm';
 
 const DoctorSelect = ({form, setForm}) => {
 
