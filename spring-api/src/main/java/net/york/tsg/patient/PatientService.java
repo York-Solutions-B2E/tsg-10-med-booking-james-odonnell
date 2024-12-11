@@ -25,6 +25,17 @@ public class PatientService {
 			HttpStatus.OK);
 	}
 
+	public ResponseEntity<?> getPatientByEmail(String email) {
+		Optional<Patient> optionalPatient = patientRepository.findByEmail(email);
+		if (optionalPatient.isEmpty())
+			return new ResponseEntity<>(
+				"Error: email: " + email + " is not tied to any patients.",
+				HttpStatus.NOT_FOUND
+			);
+
+		return ResponseEntity.ok().body(optionalPatient.get());
+	}
+
 	public ResponseEntity<?> getPatientById(Long patient_id) {
 		Optional<Patient> optionalPatient = patientRepository.findById(patient_id);
 		if (optionalPatient.isEmpty())

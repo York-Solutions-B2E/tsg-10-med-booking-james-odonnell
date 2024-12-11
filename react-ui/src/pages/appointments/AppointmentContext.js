@@ -24,11 +24,12 @@ const AppointmentProvider = ({children}) => {
 			return;
 		if (patientInfo.email !== '') {
 			(async () => {
-				const data = await DataAPI.request(
-					"appointments/patients", "GET",
-					{patientEmail: patientInfo.email.toLowerCase()}
-				);
-				if (data === null) {
+				const patient = await DataAPI.request(
+					"patients/getinfo", "GET",
+					{patientEmail: patientInfo.email.toLowerCase()});
+				if (patient !== null) {
+					setPatientInfo(JSON.parse(patient));
+				} else {
 					setModalOpen(true);
 					setPatientInfo({
 						...patientInfo,
@@ -36,10 +37,18 @@ const AppointmentProvider = ({children}) => {
 					});
 					return;
 				}
+				const data = await DataAPI.request(
+					"appointments/patients", "GET",
+					{patientEmail: patientInfo.email.toLowerCase()}
+				);
+				if (data === null) {
+					setAppointments([]);
+					return;
+				}
 				setAppointments(JSON.parse(data));
 			})();
 		}
-	}, [patientInfo, appointments, navigate]);
+	}, [patientInfo, setPatientInfo, appointments, navigate]);
 
 	return (
 		<AppointmentContext.Provider value={{appointments, setAppointments}}>

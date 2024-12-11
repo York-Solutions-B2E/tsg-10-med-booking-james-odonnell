@@ -33,12 +33,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
-            .requestMatchers("/", "/index.html", "/static/**",
-                "/*.ico", "/*.json", "/*.png", "/api/auth",
-                "/doctors/specialization", "/specializations",
+            .requestMatchers("/", "/index.html", "/static/**", "/*.ico", "/*.json", "/*.png",
+                "/api/auth", "/doctors/specialization", "/specializations",
                 "/appointments/doctors", "/appointments/patients",
                 "/appointments/new", "/appointments/update",
-                 "/patients/update")
+                "/patients/update", "/patients/getinfo")
                 .permitAll()
             .anyRequest().authenticated());
             

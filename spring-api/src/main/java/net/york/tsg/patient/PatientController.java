@@ -23,6 +23,11 @@ public class PatientController {
 	public ResponseEntity<?> getAllPatients() {
 		return patientService.getAllPatients();
 	}
+
+	@GetMapping(path = "getinfo")
+	public ResponseEntity<?> getPatientByEmail(@RequestHeader("patientEmail") String patientEmail) {
+		return patientService.getPatientByEmail(patientEmail);
+	}
 	
 	@GetMapping(path = "id")
 	public ResponseEntity<?> getPatientById(@RequestBody Patient patient) {
