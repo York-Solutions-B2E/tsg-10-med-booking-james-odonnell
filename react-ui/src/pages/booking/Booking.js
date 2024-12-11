@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import DataAPI from '../../API/DataAPI';
 import {useAppContext} from '../../App';
 import {usePatientContext} from '../PatientContext';
-import PatientInfo from './components/PatientInfo';
+import PatientInfo from './PatientInfo';
 import DoctorSelect from './DoctorSelect';
 import DateSelect from './DateSelect';
 import SubmissionModal from '../../components/SubmissionModal';
