@@ -1,11 +1,8 @@
-import {useState, useEffect} from 'react';
-
 import dayjs from 'dayjs';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
@@ -13,8 +10,6 @@ import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {validateName, validateEmail} from '../../../util/Validate';
 
 const PatientInfo = ({form, setForm}) => {
-
-	const [valid, setValid] = useState(false);
 
 	const handleChange = (value, name) => {
 		let error = false;
