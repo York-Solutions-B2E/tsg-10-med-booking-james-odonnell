@@ -6,30 +6,36 @@ import dayjs from 'dayjs';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
 
 import {useAppContext} from '../../App';
 import DataAPI from '../../API/DataAPI';
 import {usePatientContext} from '../PatientContext';
 import {useAppointmentContext} from './AppointmentContext';
-import EditForm from './components/EditForm';
 import SubmissionModal from '../../components/SubmissionModal';
+import DoctorSelectForm from '../../components/DoctorSelectForm';
+import DateTimeForm from '../../components/DateTimeForm';
 
 const EditAppointment = () => {
 
 	const {index} = useParams();
 	const {navigate} = useAppContext();
 	const {patientInfo} = usePatientContext();
-	const {appointments, setAppointments} = useAppointmentContext();
-	const [modalOpen, setModalOpen] = useState(false);
+	const {
+		appointments: patientAppointments,
+		setAppointments: setPatientAppointments
+	} = useAppointmentContext();
+	const [appointment] = useState(patientAppointments[index]);
 	const [specializations, setSpecializations] = useState([]);
-	const [appointment] = useState(appointments[index]);
 	const [doctors, setDoctors] = useState([]);
+	const [doctorAppointments, setDoctorAppointments] = useState([]);
 	const [now] = useState(dayjs());
 	const [nineAM] = useState(now.set('hour', 9).startOf('hour'));
 	const [fourPM] = useState(now.set('hour', 16).startOf('hour'));
 	const [minDate, setMinDate] = useState(now);
 	const [minTime, setMinTime] = useState(null);
-	const [valid, setValid] = useState(true);
+	const [modalOpen, setModalOpen] = useState(false);
 	const [form, setForm] = useState({
 		specialization: {
 			id: appointment.doctor.specialization.id,
@@ -44,6 +50,7 @@ const EditAppointment = () => {
 		date: null,
 		time: null,
 		visitType: null,
+		valid: false,
 	});
 
 	useEffect(() => {
@@ -63,7 +70,22 @@ const EditAppointment = () => {
 	}, [patientInfo.email, form.specialization, navigate]);
 
 	useEffect(() => {
-		if (dayjs().isBefore(nineAM) || (form.date != null && dayjs().isBefore(form.date))) {
+		if (form.doctor.id !== null) {
+			(async () => {
+				const docAppointments = await DataAPI.request(
+					"appointments/doctors", "GET",
+					{doctorId: form.doctor.id}
+				);
+				if (docAppointments !== null)
+					setDoctorAppointments(docAppointments);
+			})();
+		} else {
+			setDoctorAppointments([]);
+		}
+	}, [form.doctor.id]);
+
+	useEffect(() => {
+		if (now.isBefore(nineAM) || (form.date != null && now.isBefore(form.date))) {
 			setMinTime(nineAM);
 		} else {
 			let time = now.add(1, 'hour').hour();
@@ -77,89 +99,77 @@ const EditAppointment = () => {
 		}
 	}, [form.date, fourPM, nineAM, now]);
 
-	useEffect(() => {
-		console.log(form);
-		setValid(
-			form.specialization.id !== null &&
-			form.doctor.id !== null &&
-			form.date !== null &&
-			form.time !== null &&
-			form.visitType !== null
-		);
-	}, [form]);
-
-	const handleChange = (value, type, e) => {
-		let field = null;
-		if (value === null)
-			setValid(false);
-		console.log(value, type, e);
-		if (type === "doctor" || type === "specialization") {
-			const {id} = e.target;
-			const fieldIndex = parseInt(id.charAt(id.length - 1));
-			if (isNaN(fieldIndex)) {
-				setValid(false);
-				setForm({
-					...form,
-					specialization:
-						(type === "specialization" ? value !== null ?
-							value : {
-								id: null,
-								name: ''
-							} : form["specialization"]
-						),
-					doctor: {
-						id: null,
-						firstName: '',
-						lastName: '',
-					},
-					date: null,
-					time: null,
-					fullName: ''
-				});
-				return;
-			}
-			type === "doctor" ?
-				field = {...doctors[fieldIndex]} :
-				field = {...specializations[fieldIndex]};
+	//id, value, field
+	const handleChange = (value, field, id) => {
+		if (field !== "specialization" &&
+				field !== "doctor" &&
+				field !== "date" &&
+				field !== "time" &&
+				field !== "visitType") {
+			console.log("Error: not a valid object field");
+			console.log(value, field, id);
+			return;
 		}
-		setForm({
-			...form,
-			doctor: (type === "doctor" && field !== null ?
-				{...field} : type === "specialization" ? {
+
+		let obj = null;
+		if (field === "specialization" || field === "doctor") {
+			const fieldIndex = parseInt(id.charAt(id.length - 1));
+			if (id !== "" && !isNaN(fieldIndex)) {
+				if (field === "specialization") {
+					obj = {...specializations[fieldIndex]};
+				} else if (field === "doctor") {
+					obj = {...doctors[fieldIndex]};
+				}
+			} else {
+				obj = null;
+			}
+		}
+
+		let temp = {
+			doctor: (field === "doctor" ?
+				(obj !== null ? obj : {
 					id: null,
 					firstName: '',
-					lastName: ''
-				} : form.doctor
+					lastName: '',
+				}) : (field === "specialization" ? {
+					id: null,
+					firstName: '',
+					lastName: '',
+				} : form.doctor)
 			),
-			date: (type === "doctor" || type === "specialization" ?
-				null : form.date),
-			time: (type === "doctor" || type === "specialization" || type === "date" ?
-				null : form.time),
-			[type]: (type === "doctor" || type === "specialization" ?
-				{...field} : value),
-			fullName: (type === "doctor" ?
-				value : type === "specialization" ?
-				'' : form.fullName
-			)
-		});
+
+			specialization: (field === "specialization" ?
+				(obj !== null ? obj : {
+					id: null,
+					name: '',
+				}) : form.specialization),
+
+			fullName: (field === "doctor" ? value :
+				(field === "specialization" ? '' :
+					form.fullName)),
+
+			date: (field === "date" ? value :
+				(field === "specialization" || field === "doctor" ? null :
+					form.date)),
+
+			time: (field !== "time" && field !== "visitType" ? null :
+				(field === "time" ? value :
+					form.time)),
+
+			visitType: (field === "visitType" ? value :
+				form.visitType),
+		}
+
+		temp.valid =
+			value !== null &&
+			temp.doctor.id !== null &&
+			temp.specialization.id !== null &&
+			temp.date !== null &&
+			temp.time !== null &&
+			temp.visitType !== null;
+
+		setForm(temp);
 	}
-
-	const appointmentConflicts = (date) => {
-    let day = date.day();
-    if (day === 0 || day === 6 || form.doctor.id === null)
-      return true;
-
-    if (appointments != null) {
-      for (let i = 0;i < appointments.length;i++) {
-      	if (i == index)
-      		continue;
-        let apptDate = dayjs(appointments[i].dateTime).get('date');
-        if (date.get('date') === apptDate && appointments[i].doctor.id === form.doctor.id)
-          return true;
-      }
-    }
-    return false;
-  }
 
   const confirmSubmit = async () => {
   	console.log(form);
@@ -169,62 +179,95 @@ const EditAppointment = () => {
   		id: appointment.id,
   		dateTime: dateTime,
   		doctor: {
-  			...form["doctor"],
+  			...form.doctor,
   			specialization: {
-  				...form["specialization"]
-  			}
+  				...form.specialization,
+  			},
   		},
   		visitType: form.visitType,
   		status: (dayjs(dateTime) !== dayjs(appointment.dateTime) ?
-  			'RESCHEDULED' : 'CONFIRMED')
+  			'RESCHEDULED' : 'CONFIRMED'),
   	}
   	await DataAPI.request(
   		"appointments/update", "PUT",
   		{"content-type": "application/json"},
   		JSON.stringify(updatedAppointment));
 
-  	appointments[index] = updatedAppointment;
-  	setAppointments(appointments);
+  	patientAppointments[index] = updatedAppointment;
+  	setPatientAppointments(patientAppointments);
   	setModalOpen(false);
 		navigate("/myappointments/list");
   }
 
+
+	const filterDates = (date) => {
+		let day = date.day();
+		if (day === 0 || day === 6 || form.doctor.id === null)
+			return true;
+
+		date = date.format("YYYY-MM-DD");
+		if (patientAppointments != null) {
+			for (let i = 0;i < patientAppointments.length;i++) {
+				if (i == index)
+					continue;
+				let apptDate = dayjs(patientAppointments[i].dateTime).format("YYYY-MM-DD");
+				if (date === apptDate &&
+					patientAppointments[i].status !== "CANCELLED" &&
+					patientAppointments[i].doctor.id === form.doctor.id)
+					return true;
+			}
+		}
+		return false;
+	}
+
 	return (
 		<Container sx={{mt: 8}}>
-			<EditForm props={{
-				specializations,
-				doctors,
-				minDate,
-				minTime,
-				form,
-				handleChange,
-				appointmentConflicts}}
-			/>
+			<Paper elevation={5} sx={{p: 4}}>
+				<Grid container spacing={4} >
+					<Grid item xs={12}>
+						<DoctorSelectForm
+							form={form}
+							specializations={specializations}
+							doctors={doctors}
+							handleChange={handleChange}
+						/>
+					</Grid>
+
+					<Grid item xs={12}>
+						<DateTimeForm
+							form={form}
+							patientAppointments={patientAppointments}
+							doctorId={form.doctor.id}
+							doctorAppointments={doctorAppointments}
+							minDate={minDate}
+							minTime={minTime}
+							maxTime={fourPM}
+							handleChange={handleChange}
+							filterDates={filterDates}
+						/>
+					</Grid>
+				</Grid>
+			</Paper>
 			<SubmissionModal
 				open={modalOpen}
 				setOpen={setModalOpen}
 				cancel={() => setModalOpen(false)}
 				confirmSubmit={confirmSubmit}
-				form={{form}}
-				patient={null}
-				doctor={{
-					...form["doctor"],
-					specialization: form.specialization
-				}}
-				specialization={form.specialization}
-				appointment={{
-					visitType: form.visitType
+				form={{
+					...form,
+					patient: null,
 				}}
 			/>
 			<Box sx={{display: 'flex', justifyContent: 'space-between', mt: 4}} >
 				<Button
 					onClick={() => navigate("/myappointments/list")}
 					variant="contained">
-					CANCEL</Button>
+					CANCEL
+				</Button>
 				<Button
 					onClick={() => setModalOpen(true)}
 					variant="contained"
-					disabled={!valid}>
+					disabled={!form.valid}>
 					SAVE
 				</Button>
 			</Box>
