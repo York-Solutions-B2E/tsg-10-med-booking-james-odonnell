@@ -23,7 +23,6 @@ export const useAppContext = () => {
 const App = () => {
 
   const navigate = useNavigate();
-  const [user, setUser] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [userEmail, setUserEmail] = useState(null);
 
@@ -31,7 +30,6 @@ const App = () => {
     (async () => {
       const response = await AuthenticationAPI.authenticate();
       if (response !== null) {
-        setUser(true);
         if (response.admin)
           setAdmin(true);
       }
@@ -56,7 +54,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <AppContext.Provider value={{navigate, user, admin, userEmail, setUserEmail}}>
+      <AppContext.Provider value={{navigate, admin, userEmail, setUserEmail}}>
 
         <ThemeContext.Provider value={[theme, switchTheme]}>
           <NavBar />
