@@ -9,17 +9,19 @@ import Box from '@mui/material/Box';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 
+import DataAPI from '../../API/DataAPI';
 import {useAppContext} from '../../App';
 import {usePatientContext} from '../PatientContext';
 import PatientInfo from './components/PatientInfo';
 import DoctorSelect from './components/DoctorSelect';
 import DateSelect from './components/DateSelect';
+import SubmissionModal from '../../components/SubmissionModal';
 
 const Booking = () => {
 
 	const {navigate} = useAppContext();
 	const {patientInfo, setPatientInfo} = usePatientContext();
-	const [modalOpen, setModalOpen] = useState();
+	const [modalOpen, setModalOpen] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
 	const [patientForm, setPatientForm] = useState({
 		firstName: {
@@ -38,7 +40,11 @@ const Booking = () => {
 			value: patientInfo.dob,
 			error: false,
 		},
-		valid: false,
+		valid:
+			patientInfo.firstName !== '' &&
+			patientInfo.lastName !== '' &&
+			patientInfo.email !== '' &&
+			patientInfo.dob !== null,
 	});
 	const [doctorForm, setDoctorForm] = useState({
 		doctor: {
@@ -56,7 +62,7 @@ const Booking = () => {
 	const [dateForm, setDateForm] = useState({
 		date: null,
 		time: null,
-		visitType: null,
+		visitType: "",
 		valid: false,
 	});
 
@@ -79,6 +85,38 @@ const Booking = () => {
 	}
 
 	const handleSubmit = () => {
+		setModalOpen(true);
+	}
+
+	const confirmSubmit = async () => {
+		const appointment = {
+			patient: {
+				firstName: patientForm.firstName.value,
+				lastName: patientForm.lastName.value,
+				dob: patientForm.dob.value,
+				email: patientForm.email.value,
+			},
+			doctor: {
+				...doctorForm.doctor,
+				specialization: doctorForm.specialization,
+			},
+			dateTime: dayjs(`${dateForm.date.format("YYYY-MM-DD")} ${dateForm.time.format("HH:mm")}`),
+		};
+
+		setPatientInfo(appointment.patient);
+
+		const response = await DataAPI.request(
+				"appointments/new", "POST",
+				{"content-type": "application/json"},
+				JSON.stringify(appointment)
+		);
+
+		console.log(response);
+
+		if (response !== null) {
+			setModalOpen(false);
+			navigate("/");
+		}
 	}
 
 	const forms = [patientForm, doctorForm, dateForm];
@@ -132,20 +170,22 @@ const Booking = () => {
 						"submit" : "next step"}
 				</Button>
 			</Box>
-{/*				<SubmissionModal
+				<SubmissionModal
 					open={modalOpen}
 					setOpen={setModalOpen}
 					cancel={() => setModalOpen(false)}
 					confirmSubmit={confirmSubmit}
 					form={{
-						date: dayjs(appointment.dateTime),
-						time: dayjs(appointment.dateTime)
+						patient: {
+							firstName: patientForm.firstName.value,
+							lastName: patientForm.lastName.value,
+							dob: patientForm.dob.value,
+							email: patientForm.email.value,
+						},
+						...doctorForm,
+						...dateForm,
 					}}
-					patient={patient}
-					doctor={doctor}
-					specialization={doctor.specialization}
-					appointment={appointment}
-				/>*/}
+				/>
 
 		</Container>
 	);

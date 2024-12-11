@@ -111,6 +111,7 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 										: null}
 									minTime={minTime}
 									maxTime={fourPM}
+									value={form.time}
 									onChange={(value) => handleChange(value, "time")}
 								/>
 								<RadioGroup sx={{width: '10%', mt: 4}}>
@@ -120,6 +121,7 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 											onChange={(e) => handleChange(e.target.value, "visitType")}
 										/>}
 										value="IN_PERSON"
+										checked={form.visitType !== null && form.visitType === "IN_PERSON"}
 									/>
 									<FormControlLabel
 										label="Telehealth"
@@ -127,6 +129,7 @@ const DateSelect = ({form, setForm, patientEmail, doctorId}) => {
 											onChange={(e) => handleChange(e.target.value, "visitType")}
 										/>}
 										value="TELEHEALTH"
+										checked={form.visitType !== null && form.visitType === "TELEHEALTH"}
 									/>
 								</RadioGroup>
 							</Stack>
