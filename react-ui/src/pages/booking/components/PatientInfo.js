@@ -10,25 +10,11 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 
-import {useBookingContext} from '../Booking';
 import {validateName, validateEmail} from '../../../util/Validate';
 
-const PatientInfo = () => {
+const PatientInfo = ({form, setForm}) => {
 
-	const {patient, handleNext} = useBookingContext();
 	const [valid, setValid] = useState(false);
-	const [form, setForm] = useState({
-		firstName: {value: patient.firstName, error: false},
-		lastName: {value: patient.lastName, error: false},
-		dob: {value: patient.dob, error: false},
-		email: {value: patient.email, error: false}
-	});
-
-	useEffect(() => {
-		setValid(
-			!form.firstName.error && !form.lastName.error && !form.email.error && !form.dob.error &&
-			form.firstName.value !== '' && form.lastName.value !== '' && form.email.value !== '' && form.dob.value != null);
-	}, [form]);
 
 	const handleChange = (value, name) => {
 		let error = false;
@@ -36,16 +22,29 @@ const PatientInfo = () => {
 			error = !validateName(value);
 		else if (name === "email")
 			error = !validateEmail(value);
-		if (error)
-			setValid(false);
-		setForm({
+
+		form = {
 			...form,
 			[name]:{
 				...form[name],
 				value,
 				error
 			}
-		});
+		};
+
+		const valid =
+			!form.firstName.error &&
+			!form.lastName.error &&
+			!form.email.error &&
+			!form.dob.error &&
+			form.firstName.value !== '' &&
+			form.lastName.value !== '' &&
+			form.email.value !== '' &&
+			form.dob.value != null &&
+			!error
+
+		form.valid = valid;
+		setForm(form);
 	}
 
 	return (
@@ -56,7 +55,6 @@ const PatientInfo = () => {
 						name="firstName"
 						label="First name"
 						required
-						placeholder={patient.firstName}
 						value={form.firstName.value}
 						error={form.firstName.error}
 						onChange={(e) => handleChange(e.target.value, e.target.name)}
@@ -66,7 +64,6 @@ const PatientInfo = () => {
 						name="lastName"
 						label="Last name"
 						required
-						placeholder={patient.lastName}
 						value={form.lastName.value}
 						error={form.lastName.error}
 						onChange={(e) => handleChange(e.target.value, e.target.name)}
@@ -80,7 +77,7 @@ const PatientInfo = () => {
 							disableFuture
 							minDate={dayjs("1900-01-01")}
 							maxDate={dayjs().subtract(18, 'year')}
-							defaultValue={patient.dob == null ? null : dayjs(patient.dob)}
+							defaultValue={form.dob.value == null ? null : dayjs(form.dob.value)}
 							onChange={(date) => handleChange(date, "dob")}
 							sx={{ml: 4}}
 						/>
@@ -90,7 +87,6 @@ const PatientInfo = () => {
 				<TextField
 					name="email"
 					label="Email"
-					placeholder={patient.email}
 					value={form.email.value}
 					error={form.email.error}
 					onChange={(e) => handleChange(e.target.value, e.target.name)}
@@ -151,26 +147,6 @@ const PatientInfo = () => {
 					/>
 				</Box>
 			</Paper>
-			<Box sx={{mt: 4, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
-				<Button
-					variant="contained"
-					disabled>
-					Previous
-				</Button>
-				<Button
-					variant="contained"
-					disabled={!valid}
-					onClick={() => {
-						patient.firstName = form.firstName.value;
-						patient.lastName = form.lastName.value;
-						patient.email = form.email.value;
-						patient.dob = form.dob.value;
-						console.log(patient);
-						handleNext();
-					}}>
-					Next Step
-				</Button>
-			</Box>
 		</>
 	);
 
