@@ -52,5 +52,5 @@ public class AppointmentController {
 	public ResponseEntity<?> updateAppointment(@RequestBody Appointment appointment) {
 		return appointmentService.updateAppointment(appointment);
 	}
-	
+
 }
