@@ -1,12 +1,10 @@
 spring:
-  config:
-    import: .env.yml
   application:
     name: Medical Booking
   datasource:
-    url: jdbc:postgresql://db:5432/booking
-    username: root
-    password: password
+    url: "jdbc:postgresql://postgres:5432/${POSTGRES_DB}"
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
