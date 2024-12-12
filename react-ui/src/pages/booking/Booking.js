@@ -101,9 +101,12 @@ const Booking = () => {
 				specialization: doctorForm.specialization,
 			},
 			dateTime: dayjs(`${dateForm.date.format("YYYY-MM-DD")} ${dateForm.time.format("HH:mm")}`),
+			visitType: dateForm.visitType,
 		};
 
 		setPatientInfo(appointment.patient);
+
+		console.log(appointment);
 
 		const response = await DataAPI.request(
 				"appointments/new", "POST",
