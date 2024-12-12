@@ -100,16 +100,25 @@ const ManageDoctor = () => {
 			specialization: form.specialization.value
 		}
 		let method = "POST";
-		if (index !== undefined) {
+		if (doctor !== null) {
 			method = "PUT";
 			doc.id = doctor.id;
 		}
 
 		const response = await DataAPI.requestAsAdmin(
-				"doctors", method,
-				{"content-type": "application/json"}, 
+				"doctors", method, {
+					"content-type": "application/json",
+					doctorId: (doctor !== null ? doc.id : null),
+				},
 				JSON.stringify(doc)
 		);
+
+		if (response === null) {
+			setModalOpen(false);
+			navigate("/admin/doctors");
+			return;
+		}
+
 		const updatedDoctor = await JSON.parse(response);
 
 		if (index !== undefined)
