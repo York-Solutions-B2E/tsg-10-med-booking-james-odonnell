@@ -110,6 +110,13 @@ public class AppointmentService {
 				.build()
 			);
 			optionalPatient = patientRepository.findByEmail(patient.getEmail());
+		} else {
+			if (!optionalPatient.get().getFirstName().equals(patient.getFirstName()) ||
+				!optionalPatient.get().getLastName().equals(patient.getLastName()) ||
+				!optionalPatient.get().getDob().equals(patient.getDob()))
+				return ResponseEntity
+					.status(HttpStatus.BAD_REQUEST)
+					.body("Error: ");
 		}
 
 		appointment.setDoctor(optionalDoctor.get());
