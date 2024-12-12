@@ -22,6 +22,7 @@ const AppointmentTable = () => {
   const [cancelApt, setCancelApt] = useState(null);
 
   const paginationModel = {page: 0, pageSize: 10};
+  const sortingModel = {field: 'id', sorct: 'desc'};
   const columns = [
     {field: 'id', headerName: 'ID', minWidth: 100},
     {field: 'patient', headerName: 'Patient', minWidth: 150},
@@ -93,7 +94,12 @@ const AppointmentTable = () => {
           }
         })}
         columns={columns}
-        initialState={{pagination: {paginationModel}}}
+        initialState={{
+          pagination: {paginationModel},
+          sorting: {
+            sortModel: [sortingModel],
+          }
+        }}
         pageSizeOptions={[5, 10]}
         sx={{border: 0}}
         slots={{
