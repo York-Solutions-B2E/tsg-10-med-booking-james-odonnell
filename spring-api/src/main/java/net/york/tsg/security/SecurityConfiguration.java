@@ -33,8 +33,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
-            .requestMatchers("/", "/index.html", "/static/**", "/*.ico", "/*.json", "/*.png",
-                "/api/auth", "/doctors/specialization", "/specializations",
+            .requestMatchers("/", "/index.html", "/static/**",
+                "/*.ico", "/*.json", "/*.png", "/api/auth",
+                "/doctors/specialization", "/specializations",
                 "/appointments/doctors", "/appointments/patients",
                 "/appointments/new", "/appointments/update",
                 "/patients/update", "/patients/getinfo")
@@ -42,9 +43,7 @@ public class SecurityConfiguration {
             .anyRequest().authenticated());
             
         http.csrf((csrf) -> csrf
-            .ignoringRequestMatchers("/patients/update",
-                "/appointments/patients", "/appointments/new",
-                "/appointments/doctors", "/appointments/update")
+            .ignoringRequestMatchers("/patients/update", "/appointments/new", "/appointments/update")
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()));
         http.addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class);

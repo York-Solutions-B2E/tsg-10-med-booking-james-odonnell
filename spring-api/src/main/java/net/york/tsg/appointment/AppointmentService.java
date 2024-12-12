@@ -18,8 +18,6 @@ import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
-
 
 @Service
 public class AppointmentService {
