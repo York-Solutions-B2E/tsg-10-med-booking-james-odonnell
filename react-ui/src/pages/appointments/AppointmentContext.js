@@ -61,8 +61,10 @@ const AppointmentProvider = ({children}) => {
 				content={[{
 					content:
 						<Button
-							onClick={() => setModalOpen(false)}
-							to="/booking">
+							onClick={() => {
+								setModalOpen(false);
+								navigate("/booking");
+							}}>
 							Click here to book an appointment.
 						</Button>,
 				}]}
