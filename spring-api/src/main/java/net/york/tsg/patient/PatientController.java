@@ -30,8 +30,8 @@ public class PatientController {
 	}
 	
 	@GetMapping(path = "id")
-	public ResponseEntity<?> getPatientById(@RequestBody Patient patient) {
-		return patientService.getPatientById(patient.getId());
+	public ResponseEntity<?> getPatientById(@RequestHeader("patientId") Long patientId) {
+		return patientService.getPatientById(patientId);
 	}
 	
 	@PostMapping(path = "new")
@@ -40,8 +40,8 @@ public class PatientController {
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<?> removePatientById(@RequestBody Patient patient) {
-		return patientService.removePatientById(patient.getId());
+	public ResponseEntity<?> removePatientById(@RequestHeader("patientId") Long patientId) {
+		return patientService.removePatientById(patientId);
 	}
 
 	@PutMapping

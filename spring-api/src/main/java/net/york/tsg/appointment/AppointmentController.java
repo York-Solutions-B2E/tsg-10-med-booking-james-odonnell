@@ -29,8 +29,8 @@ public class AppointmentController {
 	}
 
 	@GetMapping(path = "find")
-	public ResponseEntity<?> getAppointmentById(@RequestBody Appointment appointment) {
-		return appointmentService.getAppointmentById(appointment);
+	public ResponseEntity<?> getAppointmentById(@RequestHeader Long appointmentId) {
+		return appointmentService.getAppointmentById(appointmentId);
 	}
 
 	@GetMapping(path = "doctors")

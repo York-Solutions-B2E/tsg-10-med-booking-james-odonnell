@@ -51,14 +51,14 @@ public class AppointmentService {
 			HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> getAppointmentById(Appointment appointment) {
-		if (appointment.getId() == null)
+	public ResponseEntity<?> getAppointmentById(Long appointmentId) {
+		if (appointmentId == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointment.getId());
+		Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
 		if (optionalAppointment.isEmpty())
 			return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
-				.body("Error: appointment_id: " + appointment.getId() + " not found.");
+				.body("Error: appointment_id: " + appointmentId + " not found.");
 
 		return ResponseEntity.ok().body(optionalAppointment.get().toDTO());
 	}
