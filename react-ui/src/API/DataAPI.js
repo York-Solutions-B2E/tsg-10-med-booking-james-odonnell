@@ -22,8 +22,10 @@ class DataAPI {
 				headers: headers,
 				body: body,
 			});
-			if (!response.ok)
+			if (!response.ok) {
+				console.log(response);
 				throw new Error (`Response status: ${response.status}`);
+			}
 
 			const data = await response.text();
 			if (data !== "")
