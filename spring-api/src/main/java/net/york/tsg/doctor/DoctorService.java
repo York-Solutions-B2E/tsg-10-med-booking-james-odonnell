@@ -34,8 +34,7 @@ public class DoctorService {
 	}
 
 	public ResponseEntity<?> getAllDoctors() {
-		return new ResponseEntity<>(
-			doctorRepository.findAll(), HttpStatus.OK);
+		return ResponseEntity.ok().body(doctorRepository.findAll());
 	}
 
 	public ResponseEntity<?> getDoctorById(Long doctorId) {
@@ -43,10 +42,10 @@ public class DoctorService {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
 		if (optionalDoctor.isEmpty())
-			return new ResponseEntity<>(
-				"Error: doctorId: " + doctorId + " not found.",
-				HttpStatus.NOT_FOUND
-			);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("Error: doctorId: " + doctorId + " not found.");
+
 		return ResponseEntity.ok().body(optionalDoctor.get());
 	}
 
@@ -61,7 +60,7 @@ public class DoctorService {
 
 	public ResponseEntity<?> addNewDoctor(Doctor doctor) {
 		doctorRepository.save(doctor);
-		return new ResponseEntity<>(doctor, HttpStatus.OK);
+		return ResponseEntity.ok().body(doctor);
 	}
 
 	public ResponseEntity<?> removeDoctor(Long doctorId) {
@@ -69,15 +68,14 @@ public class DoctorService {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctorId);
 		if (optionalDoctor.isEmpty())
-			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctorId + " not found.",
-				HttpStatus.NOT_FOUND
-			);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("Error: doctor_id: " + doctorId + " not found.");
 
 		appointmentService.cancelAllByDoctorId(doctorId);
 		optionalDoctor.get().setStatus(DoctorStatus.INACTIVE);
 		doctorRepository.save(optionalDoctor.get());
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok().body(optionalDoctor.get());
 	}
 
 	@Transactional
@@ -86,10 +84,9 @@ public class DoctorService {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		Optional<Doctor> optionalDoctor = doctorRepository.findById(doctor.getId());
 		if (optionalDoctor.isEmpty())
-			return new ResponseEntity<>(
-				"Error: doctor_id: " + doctor.getId() + " not found.",
-				HttpStatus.NOT_FOUND
-			);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("Error: doctor_id: " + doctor.getId() + " not found.");
 
 		if (doctor.getFirstName() != null && !doctor.getFirstName().isEmpty())
 			optionalDoctor.get().setFirstName(doctor.getFirstName());
@@ -100,7 +97,7 @@ public class DoctorService {
 		if (doctor.getSpecialization() != null && specializationService.specializationExists(doctor.getSpecialization().getName()))
 			optionalDoctor.get().setSpecialization(doctor.getSpecialization());
 
-		return new ResponseEntity<>(optionalDoctor.get(), HttpStatus.OK);
+		return ResponseEntity.ok().body(optionalDoctor.get());
 	}
 
 }

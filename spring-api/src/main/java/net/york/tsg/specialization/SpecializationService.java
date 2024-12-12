@@ -24,11 +24,11 @@ public class SpecializationService {
 	public ResponseEntity<?> getAllSpecializations() {
 		List<Specialization> specializations = specializationRepository.findAll();
 		if (specializations.size() <= 0)
-			return new ResponseEntity<>(
-				"There are no specializations saved",
-				HttpStatus.NOT_FOUND);
-		System.out.println(specializations);
-		return new ResponseEntity<>(specializations, HttpStatus.OK);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("There are no specializations saved");
+
+		return ResponseEntity.ok().body(specializations);
 	}
 	
 }

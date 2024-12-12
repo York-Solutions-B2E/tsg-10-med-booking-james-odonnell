@@ -28,10 +28,9 @@ public class PatientService {
 	public ResponseEntity<?> getPatientByEmail(String email) {
 		Optional<Patient> optionalPatient = patientRepository.findByEmail(email);
 		if (optionalPatient.isEmpty())
-			return new ResponseEntity<>(
-				"Error: email: " + email + " is not tied to any patients.",
-				HttpStatus.NOT_FOUND
-			);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("Error: email: " + email + " is not tied to any patients.");
 
 		return ResponseEntity.ok().body(optionalPatient.get());
 	}
@@ -39,10 +38,10 @@ public class PatientService {
 	public ResponseEntity<?> getPatientById(Long patient_id) {
 		Optional<Patient> optionalPatient = patientRepository.findById(patient_id);
 		if (optionalPatient.isEmpty())
-			return new ResponseEntity<>(
-				"Error: patient_id: " + patient_id + " not found.",
-				HttpStatus.NOT_FOUND
-			);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("Error: patient_id: " + patient_id + " not found.");
+
 		return ResponseEntity.ok().body(optionalPatient.get());
 	}
 
@@ -54,10 +53,9 @@ public class PatientService {
 	public ResponseEntity<?> removePatientById(Long patient_id) {
 		Optional<Patient> optionalPatient = patientRepository.findById(patient_id);
 		if (optionalPatient.isEmpty())
-			return new ResponseEntity<>(
-				"Error: could not remove patient; patient_id: " + patient_id + ", does not exist.",
-				HttpStatus.NOT_FOUND
-			);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("Error: could not remove patient; patient_id: " + patient_id + ", does not exist.");
 
 		patientRepository.deleteById(patient_id);
 		return new ResponseEntity<>(optionalPatient.get(), HttpStatus.OK);
@@ -67,10 +65,9 @@ public class PatientService {
 	public ResponseEntity<?> updatePatientInformation(Patient patient) {
 		Optional<Patient> optionalPatient = patientRepository.findById(patient.getId());
 		if (optionalPatient.isEmpty())
-			return new ResponseEntity<>(
-				"Error: could not update patient information; patient_id: " + patient.getId() + ", does not exist.",
-				HttpStatus.NOT_FOUND
-			);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("Error: could not update patient information; patient_id: " + patient.getId() + ", does not exist.");
 
 		if (patient.getFirstName() != null && !patient.getFirstName().isEmpty())
 			optionalPatient.get().setFirstName(patient.getFirstName());

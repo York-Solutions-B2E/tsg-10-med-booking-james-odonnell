@@ -35,7 +35,9 @@ public class AuthenticationService {
 
 	public ResponseEntity<?> getUser(OAuth2User oAuth2User) {
 		if (oAuth2User == null) {
-            return new ResponseEntity<>("User not authenticated.", HttpStatus.NOT_FOUND);
+			return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body("User not authenticated.");
         } else {
         	User appUser = new User(oAuth2User);
             return ResponseEntity.ok().body(appUser);
@@ -47,8 +49,11 @@ public class AuthenticationService {
             @AuthenticationPrincipal(expression = "idToken") OidcIdToken idToken) {
 
         // send logout URL to client so they can initiate logout
-        String logoutUrl = this.registration.getProviderDetails()
-            .getConfigurationMetadata().get("end_session_endpoint").toString();
+        String logoutUrl = this.registration
+        	.getProviderDetails()
+            .getConfigurationMetadata()
+            .get("end_session_endpoint")
+            .toString();
 
         Map<String, String> logoutDetails = new HashMap<>();
         logoutDetails.put("logoutUrl", logoutUrl);
