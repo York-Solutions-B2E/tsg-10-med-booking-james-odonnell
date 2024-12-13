@@ -3,7 +3,7 @@ services:
   postgres:
     container_name: psql
     image: postgres:14.1
-    env_file: ".env.yaml"
+    env_file: ".env.yml"
     environment:
       PGDATA: /var/lib/postgresql/data
     volumes:
@@ -14,15 +14,19 @@ services:
 
   spring-api:
     container_name: spring-boot
-    image: spring-api:latest
-    env_file: ".env.yaml"
+    build:
+      context: ./spring-api
+      dockerfile: Dockerfile
+    env_file: ".env.yml"
     ports:
       - "8080:8080"
     restart: unless-stopped
 
   react-ui:
     container_name: react-ui
-    image: react-ui:latest
+    build:
+      context: ./react-ui
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
 
